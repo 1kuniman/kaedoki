@@ -98,7 +98,8 @@ function costs(care, disp, years = 5, months = 6) {
 }
 
 // ---------- レイアウト ----------
-function layout({ title, desc, canonical, crumbs = [], body, ds = null, jsonld = [], scripts = [], aside = true, noindex = false }) {
+function layout({ title, desc, canonical, crumbs = [], body, ds = null, jsonld = [], scripts = [], aside = true, noindex = false, pr = false }) {
+  if (pr) body = body.replace('</h1>', '</h1>\n<p class="pr-note">PR　このページにはAmazonアソシエイトのリンクが含まれます</p>');
   const crumbLd = crumbs.length ? [{
     '@context': 'https://schema.org', '@type': 'BreadcrumbList',
     itemListElement: [{ name: 'トップ', url: '/' }, ...crumbs].map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, ...(c.url ? { item: SITE + c.url } : {}) })),
@@ -122,7 +123,6 @@ ${noindex ? '<meta name="robots" content="noindex">\n' : ''}<meta name="descript
 ${ld}
 </head>
 <body>
-<div class="pr-bar">当サイトはアフィリエイト広告（Amazonアソシエイト）を利用しています</div>
 <header class="site-head">
   <div class="wrap head-inner">
     <a class="logo" href="/"><span class="logo-main">${esc(cfg.siteName)}</span><span class="logo-sub">${esc(cfg.tagline)}</span></a>
@@ -269,7 +269,7 @@ ${siblings.length && siblings.length <= 40 ? `<ul class="model-grid">${siblings.
 <p class="src">出典：<a href="${esc(srcUrl)}" rel="noopener" target="_blank">${esc(srcName)}</a>（${fmtDate(ds.checkedAt)}確認）</p>`;
 
   return layout({
-    title, desc, canonical: modelUrl(ds, m.id), ds,
+    title, desc, canonical: modelUrl(ds, m.id), ds, pr: true,
     crumbs: [{ name: `${maker.name} ${maker.category}`, url: makerUrl(ds) }, { name: m.series.name, url: `${makerUrl(ds)}#s-${m.series.key}` }, { name: m.id }],
     body, scripts: costHtml ? ['/assets/calc.js'] : [],
   });
@@ -313,7 +313,7 @@ ${noPage.length ? `<h3 class="h3">その他の適用機種</h3><ul class="model-
 
 <p class="src">出典：${srcs.slice(0, 8).map(([u, n]) => `<a href="${esc(u)}" rel="noopener" target="_blank">${esc(n)}</a>`).join('、')}${srcs.length > 8 ? ` ほか${srcs.length - 8}件` : ''}（${fmtDate(ds.checkedAt)}確認）</p>`;
 
-  return layout({ title, desc, canonical: partUrl(p.id), ds, crumbs: [{ name: '部品番号一覧', url: '/parts/' }, { name: p.id }], body });
+  return layout({ title, desc, canonical: partUrl(p.id), ds, pr: true, crumbs: [{ name: '部品番号一覧', url: '/parts/' }, { name: p.id }], body });
 }
 
 // ---------- メーカーページ ----------
