@@ -11,9 +11,9 @@
     if (!r.hits.length) {
       out.innerHTML = '<p>「' + esc(q) + '」に一致する型番は見つかりませんでした。</p>' +
         '<ul class="notes"><li>本体シールの型番を末尾まで入力してください（例：HD-RXT524E4）。</li>' +
-        '<li>収録しているのは現在ダイニチの加湿器と、シャープの加湿空気清浄機です。</li>' +
+        '<li>収録しているのは現在ダイニチの加湿器、シャープ・パナソニックの加湿空気清浄機です。</li>' +
         '<li>メーカーの部品供給が終わった古い機種は掲載していません。</li></ul>' +
-        '<p><a href="/dainichi/">ダイニチの機種一覧</a>・<a href="/sharp/">シャープの機種一覧</a>から探す</p>';
+        '<p><a href="/dainichi/">ダイニチの機種一覧</a>・<a href="/sharp/">シャープ</a>・<a href="/panasonic/">パナソニック</a>の機種一覧から探す</p>';
       return;
     }
     var hits = r.hits.slice(0, 60);

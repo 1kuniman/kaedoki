@@ -4,7 +4,7 @@
   function norm(s) {
     return (s || '').normalize('NFKC').toUpperCase()
       .replace(/[ー‐-―−－]/g, '-')
-      .replace(/\(.*?\)/g, '').replace(/-[A-Z]{1,2}$/, '')
+      .replace(/\(.*?\)/g, '').replace(/-(W|T|H|K|B|C|S|N|A|R|TM|WK)$/, '')
       .replace(/\s+/g, '');
   }
   function bare(s) { return norm(s).replace(/-/g, ''); }
@@ -15,7 +15,7 @@
   function find(q, list) {
     var b = bare(q);
     if (!b) return { exact: null, hits: [] };
-    var PFX = /^(HD|KI|KC)/;
+    var PFX = /^(HD|KI|KC|F)/;
     var b2 = b.replace(PFX, '');
     var exact = null, starts = [], contains = [];
     list.forEach(function (it) {
