@@ -4,7 +4,7 @@
   function norm(s) {
     return (s || '').normalize('NFKC').toUpperCase()
       .replace(/[ー‐-―−－]/g, '-')
-      .replace(/\(.*?\)/g, '')
+      .replace(/\(.*?\)/g, '').replace(/-[A-Z]{1,2}$/, '')
       .replace(/\s+/g, '');
   }
   function bare(s) { return norm(s).replace(/-/g, ''); }
@@ -15,11 +15,12 @@
   function find(q, list) {
     var b = bare(q);
     if (!b) return { exact: null, hits: [] };
-    var b2 = b.replace(/^HD/, '');
+    var PFX = /^(HD|KI|KC)/;
+    var b2 = b.replace(PFX, '');
     var exact = null, starts = [], contains = [];
     list.forEach(function (it) {
-      var kb = bare(it.k), kb2 = kb.replace(/^HD/, '');
-      if (kb === b || (kb.indexOf('HD') === 0 && kb2 === b2 && b2.length >= 4)) exact = exact || it;
+      var kb = bare(it.k), kb2 = kb.replace(PFX, '');
+      if (kb === b || (PFX.test(kb) && kb2 === b2 && b2.length >= 4)) exact = exact || it;
       else if (kb.indexOf(b) === 0 || kb2.indexOf(b2) === 0) starts.push(it);
       else if (kb.indexOf(b) > -1 || (b2.length >= 3 && kb.indexOf(b2) > -1)) contains.push(it);
     });
