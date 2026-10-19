@@ -99,7 +99,6 @@ function costs(care, disp, years = 5, months = 6) {
 
 // ---------- レイアウト ----------
 function layout({ title, desc, canonical, crumbs = [], body, ds = null, jsonld = [], scripts = [], aside = true, noindex = false, pr = false }) {
-  if (pr) body = body.replace('</h1>', '</h1>\n<p class="pr-note">PR　このページにはAmazonアソシエイトのリンクが含まれます</p>');
   const crumbLd = crumbs.length ? [{
     '@context': 'https://schema.org', '@type': 'BreadcrumbList',
     itemListElement: [{ name: 'トップ', url: '/' }, ...crumbs].map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, ...(c.url ? { item: SITE + c.url } : {}) })),
@@ -301,7 +300,6 @@ ${p.variants ? `<tr><th>入数違い</th><td>${esc(p.variants)}</td></tr>` : ''}
   <a class="btn-amz" href="${esc(amazonUrl(`${maker.name} ${p.id}`))}" rel="sponsored nofollow noopener" target="_blank">Amazonで ${p.id} を見る</a>
   ${p.source ? `<a class="btn-off" href="${esc(p.source)}" rel="noopener" target="_blank">メーカー直販で見る</a>` : ''}
 </div>
-<p class="sub">※Amazonへのリンクはアフィリエイトリンクです。Amazonの検索結果には純正品以外も表示されるため、商品名と出品者を確認してください。</p>
 
 ${pair ? `<h2 class="h2">${pair.id}（${esc(pair.typeLabel)}）との違い</h2>
 <p>同じ機種で使える気化フィルターに、${p.type === 'care' ? '洗わずに捨てられる使い捨てタイプ' : '洗って長く使うお手入れタイプ'}の <a href="${partUrl(pair.id)}">${pair.id}</a>（${yen(pair.price)}・${esc(pair.life.label)}）があります。5シーズン使った場合の費用比較は<a href="/guide/dainichi-filter-cost/">こちら</a>。</p>` : ''}
