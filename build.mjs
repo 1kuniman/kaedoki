@@ -40,7 +40,7 @@ function prepare(ds) {
   const primary = new Set(ds.primaryKinds || []);
   const modelList = Object.values(models)
     .filter(m => m.parts.some(pid => primary.has(partById[pid].kind)))
-    .map(m => ({ ...m, series: seriesOf(m.id), source: (ds.modelSources || {})[m.id] }))
+    .map(m => ({ ...m, series: seriesOf(m.id), source: (ds.modelSources || {})[m.id] || (ds.modelSourceUrl ? ds.modelSourceUrl.replace('{id}', m.id) : undefined) }))
     .sort((a, b) => a.id.localeCompare(b.id, 'en', { numeric: true }));
   return { ...ds, seriesDefs: series, seriesOf, partById, modelList, hasPage: new Set(modelList.map(m => m.id)), parts: ds.parts.map(p => partById[p.id]) };
 }
@@ -58,11 +58,27 @@ const amazonUrl = q => {
   return u.toString();
 };
 const slug = s => s.toLowerCase();
+// サイドバー用：部品が多いメーカーは適用機種の多い主要部品12点に絞る
+const sideParts = ds => (ds.parts.length <= 12 ? [...ds.parts] : [...ds.parts].filter(p => (ds.primaryKinds || []).includes(p.kind) || p.kind === 'ag').sort((a, b) => b.models.length - a.models.length).slice(0, 12))
+  .sort((a, b) => KINDS[a.kind].order - KINDS[b.kind].order || b.models.length - a.models.length);
+// シリーズ内で使われる主要部品を、使う機種の多い順に返す
+const mainParts = (ds, models) => { const cnt = {}; models.flatMap(m => m.parts).filter(id => (ds.primaryKinds || []).includes(ds.partById[id].kind)).forEach(id => { cnt[id] = (cnt[id] || 0) + 1; }); return Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a]); };
+const more = (xs, n) => xs.length > n ? `<span class="sub"> ほか${xs.length - n}点</span>` : '';
+const lifeLabel = p => p.life ? p.life.label : '取扱説明書で確認';
 const modelUrl = (ds, m) => `/${ds.maker.id}/${slug(m)}/`;
 const partUrl = p => `/parts/${slug(p)}/`;
 const makerUrl = ds => `/${ds.maker.id}/`;
 const fmtDate = d => d.replace(/-/g, '/');
-const amzLink = (ds, p, text) => `<a href="${esc(amazonUrl(`${ds.maker.name} ${p.id}`))}" rel="sponsored nofollow noopener" target="_blank">${text}</a>`;
+// 部品に asin（data-src/asins.json）があれば商品ページへ、なければ部品番号で検索
+const ASINS = fs.existsSync(path.join(ROOT, 'data-src/asins.json')) ? JSON.parse(fs.readFileSync(path.join(ROOT, 'data-src/asins.json'), 'utf8')) : {};
+const partAmazonUrl = (makerName, p) => {
+  const asin = p.asin || ASINS[p.id];
+  if (!asin) return amazonUrl(`${makerName} ${p.id}`);
+  const u = new URL(`https://www.amazon.co.jp/dp/${asin}`);
+  if (cfg.amazonTag) u.searchParams.set('tag', cfg.amazonTag);
+  return u.toString();
+};
+const amzLink = (ds, p, text) => `<a href="${esc(partAmazonUrl(ds.maker.name, p))}" rel="sponsored nofollow noopener" target="_blank">${text}</a>`;
 const lifeMonths = l => !l ? 9999 : l.unit === 'month' ? l.value : l.unit === 'season' ? l.value * 6 : l.unit === 'year' ? l.value * 12 : 5000;
 
 function write(rel, html) {
@@ -164,7 +180,7 @@ function sidebar(ds) {
   return `<aside class="side">
   <section class="side-box"><h2>型番はどこに書いてある？</h2><p>${esc(ds.maker.modelLabelHint)}</p><p><a href="/guide/find-model-number/">確認方法をくわしく</a></p></section>
   <section class="side-box"><h2>${esc(ds.maker.name)} シリーズから探す</h2><ul class="side-list">${groupBySeries(ds, ds.modelList).map(g => `<li><a href="${makerUrl(ds)}#s-${g.key}">${esc(g.name)}</a><span class="n">${g.models.length}</span></li>`).join('')}</ul></section>
-  <section class="side-box"><h2>部品番号から探す</h2><ul class="side-list">${[...ds.parts].sort((a, b) => KINDS[a.kind].order - KINDS[b.kind].order).map(p => `<li><a href="${partUrl(p.id)}">${p.id}</a><span class="n">${esc(shortType(p))}</span></li>`).join('')}</ul></section>
+  <section class="side-box"><h2>部品番号から探す</h2><ul class="side-list">${sideParts(ds).map(p => `<li><a href="${partUrl(p.id)}">${p.id}</a><span class="n">${esc(shortType(p))}</span></li>`).join('')}</ul>${ds.parts.length > 12 ? `<p><a href="/parts/#${ds.maker.id}">全${ds.parts.length}点を見る</a></p>` : ''}</section>
   ${makersBox}
 </aside>`;
 }
@@ -178,7 +194,7 @@ function modelPage(ds, m) {
   const primary = ps.find(p => (ds.primaryKinds || []).includes(p.kind));
 
   const partRows = ps.map(p => `<tr><th>${esc(p.kind === 'vapor' ? `気化フィルター（${p.type === 'care' ? 'お手入れ' : '使い捨て'}）` : KINDS[p.kind].label)}</th>
-<td><a class="pn" href="${partUrl(p.id)}">${p.id}</a> ${typeBadge(p)}<br><span class="sub">${esc(p.name)}${p.packLabel ? `（${esc(p.packLabel)}）` : p.pack > 1 ? `（${p.pack}個入り）` : ''}・${esc(p.life ? p.life.label : '交換周期の記載なし')}</span></td>
+<td><a class="pn" href="${partUrl(p.id)}">${p.id}</a> ${typeBadge(p)}<br><span class="sub">${esc(p.name)}${p.packLabel ? `（${esc(p.packLabel)}）` : p.pack > 1 ? `（${p.pack}個入り）` : ''}・${esc(lifeLabel(p))}</span></td>
 ${hasPrice ? `<td class="price">${p.price ? yen(p.price) : '—'}</td>` : ''}
 <td class="act">${amzLink(ds, p, 'Amazon')}${p.source ? ` / <a href="${esc(p.source)}" rel="noopener" target="_blank">直販</a>` : ''}</td></tr>`).join('\n');
 
@@ -220,7 +236,7 @@ ${hasPrice ? `<td class="price">${p.price ? yen(p.price) : '—'}</td>` : ''}
       { name: '約10年に1回', test: p => p.life && p.life.unit === 'year' && p.life.value >= 10, note: '本来は長持ちします。洗っても汚れやニオイが取れないときだけ交換します。' },
       { name: 'ランプが点滅したら', test: p => p.life && p.life.unit === 'lamp', note: '本体の交換ランプで知らせてくれます。' },
     ];
-    freqHtml = `<h2 class="h2">交換の頻度で分けると</h2>
+    if (ps.some(p => p.life)) freqHtml = `<h2 class="h2">交換の頻度で分けると</h2>
 <p>${m.id} の消耗品を、取扱説明書の交換めやすで並べ替えました。「フィルター交換」と言っても、毎月替えるものと10年もつものが混ざっています。</p>
 <table class="tbl freq"><thead><tr><th>頻度</th><th>部品</th><th>メモ</th></tr></thead><tbody>
 ${buckets.map(b => { const xs = ps.filter(b.test); return xs.length ? `<tr><th>${b.name}</th><td>${xs.map(p => `<a class="pn" href="${partUrl(p.id)}">${p.id}</a> <span class="sub">${esc(KINDS[p.kind].label)}</span>`).join('<br>')}</td><td class="sub">${esc(b.note)}</td></tr>` : ''; }).join('')}
@@ -232,8 +248,8 @@ ${buckets.map(b => { const xs = ps.filter(b.test); return xs.length ? `<tr><th>$
   const keyIds = ps.filter(p => (ds.primaryKinds || []).includes(p.kind) || p.kind === 'air').map(p => p.id);
   const desc = `${maker.name}の${maker.category} ${m.id} に合う交換フィルターの部品番号は${keyIds.join('・')}。${hasPrice ? 'メーカー直販価格、' : ''}交換のめやすをメーカー資料からまとめています。`;
   const srcUrl = m.source || ds.sourceUrl || maker.officialShop;
-  const srcName = m.source ? `${maker.name} ${m.id} 取扱説明書（PDF）` : ds.sourceName || `${maker.name} 公式 別売部品ページ`;
-  const srcKind = m.source ? '取扱説明書' : ds.sourceKind || 'メーカー直販サイト';
+  const srcName = ds.modelSourceName ? ds.modelSourceName.replace('{id}', m.id) : m.source ? `${maker.name} ${m.id} 取扱説明書（PDF）` : ds.sourceName || `${maker.name} 公式 別売部品ページ`;
+  const srcKind = ds.modelSourceName ? ds.sourceKind : m.source ? '取扱説明書' : ds.sourceKind || 'メーカー直販サイト';
 
   const body = `
 <h1 class="h1">${m.id} の交換フィルター・部品</h1>
@@ -252,7 +268,7 @@ ${buckets.map(b => { const xs = ps.filter(b.test); return xs.length ? `<tr><th>$
 ${partRows}
 </tbody>
 </table>
-<p class="sub">${hasPrice ? (ds.priceLabel ? `${priceLabel}はメーカーカタログ記載の税込価格です。` : '直販価格はメーカー直販サイトの税込価格です。') : ''}Amazonの価格は出品者によって変わります。</p>
+<p class="sub">${hasPrice ? (ds.priceLabel ? `${priceLabel}は${esc(ds.sourceKind || 'メーカーカタログ')}記載の税込価格です。` : '直販価格はメーカー直販サイトの税込価格です。') : ''}Amazonの価格は出品者によって変わります。</p>
 
 ${costHtml}${freqHtml}
 
@@ -295,12 +311,12 @@ function partPage(ds, p) {
 <tr><th>部品名</th><td>${esc(p.name)}${p.typeLabel ? `（${esc(p.typeLabel)}）` : ''}</td></tr>
 <tr><th>入数</th><td>${esc(p.packLabel || `${p.pack}個`)}</td></tr>
 ${p.price ? `<tr><th>${ds.priceLabel ? 'メーカー希望小売価格' : 'メーカー直販価格'}</th><td class="price">${yen(p.price)}<span class="sub">（税込・${fmtDate(ds.checkedAt)}確認）</span></td></tr>` : ''}
-<tr><th>交換のめやす</th><td>${p.life ? esc(p.life.label) : '記載なし'}<br><span class="sub">${esc(p.lifeNote)}</span></td></tr>
+<tr><th>交換のめやす</th><td>${esc(lifeLabel(p))}<br><span class="sub">${esc(p.lifeNote)}</span></td></tr>
 ${p.variants ? `<tr><th>入数違い</th><td>${esc(p.variants)}</td></tr>` : ''}
 <tr><th>適用機種数</th><td>${p.models.length}機種</td></tr>
 </tbody></table>
 <div class="buy">
-  <a class="btn-amz" href="${esc(amazonUrl(`${maker.name} ${p.id}`))}" rel="sponsored nofollow noopener" target="_blank">Amazonで ${p.id} を見る</a>
+  <a class="btn-amz" href="${esc(partAmazonUrl(maker.name, p))}" rel="sponsored nofollow noopener" target="_blank">Amazonで ${p.id} を見る</a>
   ${p.source ? `<a class="btn-off" href="${esc(p.source)}" rel="noopener" target="_blank">メーカー直販で見る</a>` : ''}
 </div>
 
@@ -308,7 +324,7 @@ ${pair ? `<h2 class="h2">${pair.id}（${esc(pair.typeLabel)}）との違い</h2>
 <p>同じ機種で使える気化フィルターに、${p.type === 'care' ? '洗わずに捨てられる使い捨てタイプ' : '洗って長く使うお手入れタイプ'}の <a href="${partUrl(pair.id)}">${pair.id}</a>（${yen(pair.price)}・${esc(pair.life.label)}）があります。5シーズン使った場合の費用比較は<a href="/guide/dainichi-filter-cost/">こちら</a>。</p>` : ''}
 
 <h2 class="h2">適用機種一覧（${p.models.length}機種）</h2>
-<p class="sub">${p.source ? 'メーカー直販サイトの適用機種表' : ds.sourceUrl ? 'メーカー総合カタログの適用機種表' : '各機種の取扱説明書の記載'}を、シリーズ別に並べたものです。</p>
+<p class="sub">${p.source ? 'メーカー直販サイトの適用機種表' : ds.sourceUrl ? `${esc(ds.sourceKind || 'メーカー総合カタログ')}の適用機種表` : '各機種の取扱説明書の記載'}を、シリーズ別に並べたものです。</p>
 ${grouped.map(g => `<h3 class="h3">${esc(g.name)}</h3><ul class="model-grid">${g.models.map(x => `<li><a href="${modelUrl(ds, x.id)}">${x.id}</a></li>`).join('')}</ul>`).join('')}
 ${noPage.length ? `<h3 class="h3">その他の適用機種</h3><ul class="model-grid">${noPage.map(x => `<li><span>${x}</span></li>`).join('')}</ul>` : ''}
 
@@ -321,13 +337,13 @@ ${noPage.length ? `<h3 class="h3">その他の適用機種</h3><ul class="model-
 function makerPage(ds) {
   const maker = ds.maker;
   const groups = groupBySeries(ds, ds.modelList);
-  const primaryOf = g => [...new Set(g.models.flatMap(m => m.parts).filter(id => (ds.primaryKinds || []).includes(ds.partById[id].kind)))];
+  const primaryOf = g => mainParts(ds, g.models);
   const body = `
 <h1 class="h1">${esc(maker.name)} ${esc(maker.category)}の交換フィルター 機種別一覧</h1>
 <p class="lead">${ds.modelList.length}機種を収録。形名を選ぶと、その機種に合う交換部品の部品番号と交換のめやすが表示されます。</p>
 <div class="jump">${groups.map(g => `<a href="#s-${g.key}">${esc(g.name)}</a>`).join('')}</div>
 ${groups.map(g => `<h2 class="h2" id="s-${g.key}">${esc(g.name)}<span class="h2-n">${g.models.length}機種</span></h2>
-<p class="sub">主なフィルター：${primaryOf(g).map(id => `<a href="${partUrl(id)}">${id}</a>（${esc(shortType(ds.partById[id]))}）`).join('、')}</p>
+<p class="sub">主なフィルター：${primaryOf(g).slice(0, 6).map(id => `<a href="${partUrl(id)}">${id}</a>（${esc(shortType(ds.partById[id]))}）`).join('、')}${more(primaryOf(g), 6)}</p>
 <ul class="model-grid">${g.models.map(m => `<li><a href="${modelUrl(ds, m.id)}">${m.id}</a></li>`).join('')}</ul>`).join('')}
 <p class="src">出典：<a href="${esc(ds.sourceUrl || maker.officialShop)}" rel="noopener" target="_blank">${esc(ds.sourceName || `${maker.name} 公式サポート`)}</a>${ds.modelSources ? '・各機種の取扱説明書' : ''}（${fmtDate(ds.checkedAt)}確認）。ここにない形名は、まだ収録していないか、メーカーの部品供給が終わっている可能性があります。</p>`;
   return layout({
@@ -344,10 +360,10 @@ function partsIndex() {
 <p class="lead">収録している交換部品の一覧です。部品番号から適用機種を確認できます。</p>
 ${datasets.map(ds => {
   const hasPrice = ds.parts.some(p => p.price);
-  return `<h2 class="h2">${esc(ds.maker.name)} ${esc(ds.maker.category)}<span class="h2-n">${ds.parts.length}点</span></h2>
+  return `<h2 class="h2" id="${ds.maker.id}">${esc(ds.maker.name)} ${esc(ds.maker.category)}<span class="h2-n">${ds.parts.length}点</span></h2>
 <table class="tbl parts">
 <thead><tr><th>部品番号</th><th>部品名</th><th>種類</th>${hasPrice ? `<th>${ds.priceLabel || '直販価格'}</th>` : ''}<th>交換めやす</th><th>適用機種</th></tr></thead>
-<tbody>${[...ds.parts].sort((a, b) => KINDS[a.kind].order - KINDS[b.kind].order).map(p => `<tr><td><a class="pn" href="${partUrl(p.id)}">${p.id}</a></td><td>${esc(p.name)}</td><td>${typeBadge(p)}</td>${hasPrice ? `<td class="price">${p.price ? yen(p.price) : '—'}</td>` : ''}<td>${esc(p.life ? p.life.label : '記載なし')}</td><td>${p.models.length}機種</td></tr>`).join('')}</tbody>
+<tbody>${[...ds.parts].sort((a, b) => KINDS[a.kind].order - KINDS[b.kind].order || a.id.localeCompare(b.id, 'en', { numeric: true })).map(p => `<tr><td><a class="pn" href="${partUrl(p.id)}">${p.id}</a></td><td>${esc(p.name)}</td><td>${typeBadge(p)}</td>${hasPrice ? `<td class="price">${p.price ? yen(p.price) : '—'}</td>` : ''}<td>${esc(lifeLabel(p))}</td><td>${p.models.length}機種</td></tr>`).join('')}</tbody>
 </table>`;
 }).join('')}`;
   return layout({ title: `部品番号一覧｜${cfg.siteName}`, desc: '収録している家電の交換部品の部品番号・交換めやす・適用機種数の一覧。', canonical: '/parts/', crumbs: [{ name: '部品番号一覧' }], body });
@@ -380,8 +396,8 @@ ${datasets.map(ds => `<h2 class="h2">シリーズから探す（${esc(ds.maker.n
 <table class="tbl series">
 <thead><tr><th>シリーズ</th><th>主な型番</th><th>主なフィルター</th></tr></thead>
 <tbody>${groupBySeries(ds, ds.modelList).map(g => {
-  const vp = [...new Set(g.models.flatMap(m => m.parts).filter(id => (ds.primaryKinds || []).includes(ds.partById[id].kind)))];
-  return `<tr><td><a href="${makerUrl(ds)}#s-${g.key}">${esc(g.name)}</a></td><td class="sub">${g.models.slice(-3).map(m => m.id).join('、')} ほか ${g.models.length}機種</td><td>${vp.map(id => `<a href="${partUrl(id)}">${id}</a>`).join(' / ')}</td></tr>`;
+  const vp = mainParts(ds, g.models);
+  return `<tr><td><a href="${makerUrl(ds)}#s-${g.key}">${esc(g.name)}</a></td><td class="sub">${g.models.slice(-3).map(m => m.id).join('、')} ほか ${g.models.length}機種</td><td>${vp.slice(0, 4).map(id => `<a href="${partUrl(id)}">${id}</a>`).join(' / ')}${more(vp, 4)}</td></tr>`;
 }).join('')}</tbody>
 </table>`).join('')}
 
@@ -451,17 +467,19 @@ function costGuide(ds) {
 function sharpScheduleGuide(ds) {
   const order = ['pre', 'humidpre', 'ag', 'combo', 'humid', 'dust', 'deo', 'ion'];
   const byKind = order.map(k => [k, ds.parts.filter(p => p.kind === k)]).filter(([, xs]) => xs.length);
+  const top = (xs, n) => { const ys = [...xs].sort((a, b) => b.models.length - a.models.length); return ys.slice(0, n).map(p => `<a class="pn" href="${partUrl(p.id)}">${p.id}</a>`).join('<br>') + (ys.length > n ? `<br><span class="sub">ほか${ys.length - n}点</span>` : ''); };
+  const lifeRows = byKind.flatMap(([k, xs]) => [...new Set(xs.map(lifeLabel))].sort((a, b) => (a === '取扱説明書で確認') - (b === '取扱説明書で確認')).map(l => [k, l, xs.filter(p => lifeLabel(p) === l)]));
   const groups = groupBySeries(ds, ds.modelList);
   const body = `
 <h1 class="h1">シャープ加湿空気清浄機のフィルター交換時期一覧</h1>
-<p class="lead">シャープの加湿空気清浄機には、毎月替えるもの、毎年替えるもの、約10年もつものが混在しています。「フィルターを替えたい」と思ったときに、まず何を買えばいいかを取扱説明書の記載から整理しました。</p>
+<p class="lead">シャープの加湿空気清浄機には、毎月替えるもの、毎年替えるもの、約10年もつものが混在しています。「フィルターを替えたい」と思ったときに、まず何を買えばいいかを、シャープ公式の別売品データと取扱説明書の記載から整理しました。</p>
 
 <h2 class="h2">交換のめやす（部品の種類別）</h2>
 <table class="tbl freq">
 <thead><tr><th>部品</th><th>交換のめやす</th><th>品番</th></tr></thead>
-<tbody>${byKind.map(([k, xs]) => `<tr><th>${esc(KINDS[k].label)}</th><td>${esc(xs[0].life.label)}</td><td>${xs.map(p => `<a class="pn" href="${partUrl(p.id)}">${p.id}</a>`).join('<br>')}</td></tr>`).join('')}</tbody>
+<tbody>${lifeRows.map(([k, l, xs]) => `<tr><th>${esc(KINDS[k].label)}</th><td>${esc(l)}</td><td>${top(xs, 5)}</td></tr>`).join('')}</tbody>
 </table>
-<p class="sub">加湿フィルターは機種によって「約5年」（FZ-H40MF）のものがあります。</p>
+<p class="sub">加湿フィルターは機種によって「約5年」（FZ-H40MF）のものがあります。「取扱説明書で確認」は、公式の別売品ページに交換めやすの記載がなく、まだ取扱説明書で確かめていない部品です。品番は適用機種の多い順に5点まで表示しています。</p>
 
 <h2 class="h2">「ニオイがする」「加湿が弱い」ときに先に見るもの</h2>
 <ul class="notes">
@@ -475,16 +493,17 @@ function sharpScheduleGuide(ds) {
 <table class="tbl sg">
 <thead><tr><th>シリーズ</th><th>加湿</th><th>集じん</th><th>脱臭</th></tr></thead>
 <tbody>${groups.map(g => {
-  const ids = k => [...new Set(g.models.flatMap(m => m.parts).filter(id => ds.partById[id].kind === k || (k === 'dust' && ds.partById[id].kind === 'combo')))];
-  const cell = k => ids(k).map(id => `<a href="${partUrl(id)}">${id}</a>`).join('<br>') || (k === 'deo' && ids('dust').some(id => ds.partById[id].kind === 'combo') ? '<span class="sub">一体型</span>' : '—');
-  return `<tr><td><a href="${makerUrl(ds)}#s-${g.key}">${esc(g.name)}</a><br><span class="sub">${g.models.map(m => m.id).join('、')}</span></td><td>${cell('humid')}</td><td>${cell('dust')}</td><td>${cell('deo')}</td></tr>`;
+  const ids = k => { const cnt = {}; g.models.flatMap(m => m.parts).filter(id => ds.partById[id].kind === k || (k === 'dust' && ds.partById[id].kind === 'combo')).forEach(id => { cnt[id] = (cnt[id] || 0) + 1; }); return Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a]); };
+  const cell = k => { const xs = ids(k); return xs.slice(0, 3).map(id => `<a href="${partUrl(id)}">${id}</a>`).join('<br>') + (xs.length > 3 ? `<br><span class="sub">ほか${xs.length - 3}点</span>` : ''); };
+  const cell0 = k => cell(k) || (k === 'deo' && ids('dust').some(id => ds.partById[id].kind === 'combo') ? '<span class="sub">一体型</span>' : '—');
+  return `<tr><td><a href="${makerUrl(ds)}#s-${g.key}">${esc(g.name)}</a><br><span class="sub">${g.models.length <= 6 ? g.models.map(m => m.id).join('、') : `${g.models.slice(0, 4).map(m => m.id).join('、')} ほか${g.models.length - 4}機種`}</span></td><td>${cell0('humid')}</td><td>${cell0('dust')}</td><td>${cell0('deo')}</td></tr>`;
 }).join('')}</tbody>
 </table>
 <p>自分の機種の品番は、<a href="${makerUrl(ds)}">機種一覧</a>から形名のページを開くと一覧で確認できます。</p>
-<p class="src">出典：各機種の取扱説明書（シャープ公式サポートで公開されているPDF、${fmtDate(ds.checkedAt)}確認）</p>`;
+<p class="src">出典：<a href="${esc(ds.sourceUrl)}" rel="noopener" target="_blank">${esc(ds.sourceName)}</a>（品番・適用機種）、各機種の取扱説明書（交換のめやす）。${fmtDate(ds.checkedAt)}確認</p>`;
   return layout({
     title: 'シャープ加湿空気清浄機のフィルター交換時期一覧｜毎月・毎年・10年ごとに替えるもの',
-    desc: 'シャープ加湿空気清浄機（KI・KCシリーズ）の加湿フィルター・集じんフィルター・脱臭フィルター・Ag+イオンカートリッジ・プレフィルターの交換時期と品番を取扱説明書から一覧化。',
+    desc: 'シャープ加湿空気清浄機（KI・KCシリーズ）の加湿フィルター・集じんフィルター・脱臭フィルター・Ag+イオンカートリッジ・プレフィルターの交換時期と品番を公式データと取扱説明書から一覧化。',
     canonical: '/guide/sharp-filter-schedule/', ds, crumbs: [{ name: 'シャープの交換時期' }], body,
   });
 }
