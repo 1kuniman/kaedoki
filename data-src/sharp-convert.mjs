@@ -39,6 +39,8 @@ const KNOWN = {
   'FZ-W80HF': [Y10, 'タバコ5本分の粉じんを毎日吸い込んだ場合の目安。10本なら約5年です。'],
   'FZ-AX80MF': [{ unit: 'year', value: 10, label: '約10年に1回' }, '加湿空気清浄運転を1日8時間した場合に、加湿能力が半分になるまでの目安（約120カ月）。使い方や洗い方によって早まります。'],
   'FZ-Y30SF': [{ unit: 'year', value: 2, label: '約2年に1回' }, 'タバコ5本分の粉じんを毎日吸い込んだ場合の目安。10本なら約1年です。'],
+  'FZ-GK50HF': [Y10, 'タバコ5本分の粉じんを毎日吸い込んだ場合の目安。10本なら約5年です。水洗い・天日干しはしないでください。'],
+  'FZ-GK50DF': [Y10, 'タバコ5本分のニオイを毎日吸い込んだ場合の目安。10本なら約5年です。水洗い・天日干しはしないでください。'],
   'FZ-Z30MF': [{ unit: 'year', value: 5, label: '約5年に1回' }, '加湿空気清浄運転を1日8時間した場合の目安。水質や運転条件によって変わります。'],
 };
 const ION_HOURS = ['IZ-C75S', 'IZ-C75P', 'IZ-C90MR', 'IZ-C100S2'];
@@ -51,26 +53,33 @@ const BY_KIND = {
 };
 const NO_LIFE = '公式の別売品ページには交換めやすの記載がありません。お使いの機種の取扱説明書で確認してください。';
 
-function kindOf(id) {
+const DUST_IDS = ['FZ-3', 'FZ-39F', 'FZ-X1F', 'FZ-FW3F'];
+const NO_DEFAULT = ['FZ-PF90FB'];
+function kindOf(id, name) {
+  if (/^交換用フィルター/.test(name)) return 'set';
+  if (/^交換用脱臭/.test(name)) return 'deo';
+  if (DUST_IDS.includes(id)) return 'dust';
   if (/^IZ-/.test(id)) return 'ion';
   if (/^FZ-AG/.test(id)) return 'ag';
   if (/^FZ-PF\d+MF$/.test(id)) return 'humidpre';
   if (/PF\d*$|^FZ-PF/.test(id)) return 'pre';
   if (/MF\d?$/.test(id)) return 'humid';
   if (/HF\d?$/.test(id)) return 'dust';
-  if (/DF\d?$/.test(id)) return 'deo';
+  if (/(DF|KF|AF)\d?$|^FZ-600RK/.test(id)) return 'deo';
   if (/SF$/.test(id)) return 'combo';
   throw new Error('種類不明: ' + id);
 }
 
 const parts = rows.map(([id, rawName, price, models]) => {
-  const m = rawName.match(/^(.*?)（([^（）]*?(\d+)(枚|個)[^（）]*?)）$/);
-  const name = m ? m[1] : rawName;
-  const pack = m ? Number(m[3]) : 1;
-  const kind = kindOf(id);
-  const [life, lifeNote] = KNOWN[id] || ((kind !== 'pre' || /使い捨て/.test(name)) && BY_KIND[kind]) || [null, NO_LIFE];
+  // 入数の（2枚）（2個入）（2枚一組）などを名前から外す
+  const norm = rawName.replace(/\(/g, '（').replace(/\)/g, '）');
+  const m = norm.match(/（(\d+)(枚|個)(入|一組)?）/);
+  const name = (m ? norm.replace(m[0], '') : norm).replace(/（格子フィルター 12枚）/, '（格子フィルター）').replace('付です）', '付き）');
+  const pack = m ? Number(m[1]) : id === 'FZ-PF90FB' ? 12 : 1;
+  const kind = kindOf(id, name);
+  const [life, lifeNote] = KNOWN[id] || (!NO_DEFAULT.includes(id) && (kind !== 'pre' || /使い捨て/.test(name)) && BY_KIND[kind]) || [null, NO_LIFE];
   const p = { id, name, kind, pack };
-  if (m && pack > 1) p.packLabel = m[2].replace(/^(\d+)枚$/, '$1枚入り').replace(/^(\d+)個$/, '$1個一組').replace('2枚一組', '2枚一組');
+  if (pack > 1) p.packLabel = m ? (m[3] === '一組' ? `${pack}${m[2]}一組` : kind === 'ion' && !m[3] ? `${pack}個一組` : `${pack}${m[2]}入り`) : `${pack}枚入り`;
   p.price = Number(price);
   p.life = life; p.lifeNote = ION_HOURS.includes(id) ? '総運転時間が約17,500時間になると本体のランプが点滅します（24時間運転で約2年、1日8時間なら約6年）。約19,000時間でイオンの放出が止まります。' : lifeNote;
   if (id === 'FZ-AG01K1') p.variants = '2個入り FZ-AG01K2 / 4個入り FZ-AG01K4 もあります（機種により記載が異なります）。';
@@ -96,6 +105,16 @@ const series = [
   { re: '^KC-([WYZ](45|65|80)|W45Y|450Y3|45Y2|650Y3|65E\\d|65Y2|C(70|100|150))$', key: 'kcold', name: 'KC-◯45・65・80、KC-C◯（旧モデル）' },
   { re: '^KC-(20|30|35|3500|51C1|Y30|W35)', key: 'kcs', name: 'KC-30・35クラスほか（小型）' },
   { re: '^KC-M', key: 'kcm', name: 'KC-M◯' },
+  // 加湿なしの空気清浄機
+  { re: '^FU-([A-Z]{1,2}50(BK)?)$', key: 'fu50', name: 'FU-◯50（空気清浄機）' },
+  { re: '^FU-[A-G]51$', key: 'fu51', name: 'FU-◯51（空気清浄機）' },
+  { re: '^FU-([A-L]30|30P1|F28)$', key: 'fu30', name: 'FU-◯30（空気清浄機）' },
+  { re: '^FU-[A-E]80$', key: 'fu80', name: 'FU-◯80（空気清浄機）' },
+  { re: '^FU-[TU]40(BK)?$', key: 'fu40', name: 'FU-◯40（空気清浄機）' },
+  { re: '^FU-M', key: 'fum', name: 'FU-M◯（空気清浄機）' },
+  { re: '^FU-\\w*(CX|CH|C|C01|EC|SC|CK|C\\d)$', key: 'fucx', name: 'FU-◯CX・◯CHほか（空気清浄機）' },
+  { re: '^FU-', key: 'fuo', name: 'FU-その他（空気清浄機）' },
+  { re: '^FP-', key: 'fp', name: 'FP-◯（空気清浄機）' },
 ];
 const res = series.map(s => [s, new RegExp(s.re)]);
 const unmatched = allModels.filter(m => !res.some(([, r]) => r.test(m)));
@@ -104,8 +123,8 @@ if (unmatched.length) throw new Error('シリーズ未分類: ' + unmatched.join
 const OPT = 'https://jp.sharp/support/air_purifier/doc/option_result.html?productId=';
 const ds = {
   maker: {
-    id: 'sharp', name: 'シャープ', nameFull: 'シャープ', category: '加湿空気清浄機',
-    modelLabelHint: '形名は本体の側面または背面のラベルに書かれています。「KI-」「KC-」から始まる英数字です。',
+    id: 'sharp', name: 'シャープ', nameFull: 'シャープ', category: '空気清浄機',
+    modelLabelHint: '形名は本体の側面または背面のラベルに書かれています。「KI-」「KC-」（加湿空気清浄機）、「FU-」「FP-」（空気清浄機）から始まる英数字です。',
     modelNote: '形名の末尾の「-W」「-T」「-H」などは本体色を表す記号です。検索するときは省いて入力してください。',
     partsPolicy: '取扱説明書には、消耗品は保証期間中でも有料での交換になると書かれています。',
     partialNote: '部品番号と価格はシャープ公式サポートの「交換用フィルター・別売品」検索の内容です。価格は改定されることがあるので、購入前に公式ページでも確認してください。交換のめやすは取扱説明書で確認できたものを載せています。',
@@ -119,7 +138,7 @@ const ds = {
   priceLabel: '希望小売価格',
   modelSourceUrl: OPT + '{id}',
   modelSourceName: 'シャープ {id} の交換用フィルター・別売品',
-  primaryKinds: ['humid', 'dust', 'deo', 'combo'],
+  primaryKinds: ['humid', 'dust', 'deo', 'combo', 'set'],
   showFrequency: true,
   series,
   parts,

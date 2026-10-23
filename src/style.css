@@ -147,3 +147,7 @@ main{min-width:0}
 
 .tbl.sg thead th{white-space:normal}
 .pr-note{font-size:11px;color:var(--ink-3);margin:-4px 0 12px}
+
+/* 手順リスト */
+.steps{margin:8px 0 16px 1.6em;padding:0;list-style:decimal}
+.steps li{margin:6px 0;line-height:1.7}

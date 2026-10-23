@@ -17,6 +17,7 @@ const KINDS = {
   dust:     { label: '集じんフィルター', cls: 'b-dust', order: 2 },
   deo:      { label: '脱臭フィルター', cls: 'b-dust', order: 3 },
   combo:    { label: '集じん・脱臭一体型', cls: 'b-dust', order: 2 },
+  set:      { label: '集じん・脱臭フィルターセット', cls: 'b-dust', order: 2 },
   air:      { label: 'エアフィルター', cls: 'b-air', order: 4 },
   ag:       { label: 'Ag+イオンカートリッジ', cls: 'b-air', order: 5 },
   ion:      { label: 'イオン発生ユニット', cls: 'b-air', order: 6 },
@@ -270,7 +271,7 @@ ${partRows}
 </table>
 <p class="sub">${hasPrice ? (ds.priceLabel ? `${priceLabel}は${esc(ds.sourceKind || 'メーカーカタログ')}記載の税込価格です。` : '直販価格はメーカー直販サイトの税込価格です。') : ''}Amazonの価格は出品者によって変わります。</p>
 
-${costHtml}${freqHtml}
+${costHtml}${freqHtml}${ds.maker.id === 'sharp' && ps.some(p => p.kind === 'humid') ? `<p>加湿フィルターは、交換する前に洗うと長持ちします。→ <a href="/guide/sharp-humidifier-filter-care/">クエン酸・重曹での洗い方</a></p>` : ''}
 
 <h2 class="h2">買う前に確認すること</h2>
 <ul class="notes">
@@ -382,7 +383,7 @@ function topPage() {
     <button type="submit">部品を調べる</button>
   </form>
   <ul class="suggest" data-suggest-list hidden></ul>
-  <p class="top-hint">型番は本体の側面か背面のシールに書いてあります。「HD-」「KI-」「F-」を省いて入れても探せます。</p>
+  <p class="top-hint">型番は本体の側面か背面のシールに書いてあります。「HD-」「KI-」「FU-」「F-」を省いて入れても探せます。</p>
 </section>
 
 <h2 class="h2">収録しているメーカー</h2>
@@ -465,7 +466,7 @@ function costGuide(ds) {
 }
 
 function sharpScheduleGuide(ds) {
-  const order = ['pre', 'humidpre', 'ag', 'combo', 'humid', 'dust', 'deo', 'ion'];
+  const order = ['pre', 'humidpre', 'ag', 'combo', 'set', 'humid', 'dust', 'deo', 'ion'];
   const byKind = order.map(k => [k, ds.parts.filter(p => p.kind === k)]).filter(([, xs]) => xs.length);
   const top = (xs, n) => { const ys = [...xs].sort((a, b) => b.models.length - a.models.length); return ys.slice(0, n).map(p => `<a class="pn" href="${partUrl(p.id)}">${p.id}</a>`).join('<br>') + (ys.length > n ? `<br><span class="sub">ほか${ys.length - n}点</span>` : ''); };
   const lifeRows = byKind.flatMap(([k, xs]) => [...new Set(xs.map(lifeLabel))].sort((a, b) => (a === '取扱説明書で確認') - (b === '取扱説明書で確認')).map(l => [k, l, xs.filter(p => lifeLabel(p) === l)]));
@@ -493,18 +494,83 @@ function sharpScheduleGuide(ds) {
 <table class="tbl sg">
 <thead><tr><th>シリーズ</th><th>加湿</th><th>集じん</th><th>脱臭</th></tr></thead>
 <tbody>${groups.map(g => {
-  const ids = k => { const cnt = {}; g.models.flatMap(m => m.parts).filter(id => ds.partById[id].kind === k || (k === 'dust' && ds.partById[id].kind === 'combo')).forEach(id => { cnt[id] = (cnt[id] || 0) + 1; }); return Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a]); };
+  const ids = k => { const cnt = {}; g.models.flatMap(m => m.parts).filter(id => ds.partById[id].kind === k || (k === 'dust' && ['combo', 'set'].includes(ds.partById[id].kind))).forEach(id => { cnt[id] = (cnt[id] || 0) + 1; }); return Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a]); };
   const cell = k => { const xs = ids(k); return xs.slice(0, 3).map(id => `<a href="${partUrl(id)}">${id}</a>`).join('<br>') + (xs.length > 3 ? `<br><span class="sub">ほか${xs.length - 3}点</span>` : ''); };
-  const cell0 = k => cell(k) || (k === 'deo' && ids('dust').some(id => ds.partById[id].kind === 'combo') ? '<span class="sub">一体型</span>' : '—');
+  const cell0 = k => cell(k) || (k === 'deo' && ids('dust').some(id => ['combo', 'set'].includes(ds.partById[id].kind)) ? '<span class="sub">一体型・セット</span>' : '—');
   return `<tr><td><a href="${makerUrl(ds)}#s-${g.key}">${esc(g.name)}</a><br><span class="sub">${g.models.length <= 6 ? g.models.map(m => m.id).join('、') : `${g.models.slice(0, 4).map(m => m.id).join('、')} ほか${g.models.length - 4}機種`}</span></td><td>${cell0('humid')}</td><td>${cell0('dust')}</td><td>${cell0('deo')}</td></tr>`;
 }).join('')}</tbody>
 </table>
 <p>自分の機種の品番は、<a href="${makerUrl(ds)}">機種一覧</a>から形名のページを開くと一覧で確認できます。</p>
+<p>加湿フィルターを洗う手順と分量は「<a href="/guide/sharp-humidifier-filter-care/">加湿フィルターの洗い方（クエン酸・重曹）</a>」にまとめています。</p>
 <p class="src">出典：<a href="${esc(ds.sourceUrl)}" rel="noopener" target="_blank">${esc(ds.sourceName)}</a>（品番・適用機種）、各機種の取扱説明書（交換のめやす）。${fmtDate(ds.checkedAt)}確認</p>`;
   return layout({
     title: 'シャープ加湿空気清浄機のフィルター交換時期一覧｜毎月・毎年・10年ごとに替えるもの',
     desc: 'シャープ加湿空気清浄機（KI・KCシリーズ）の加湿フィルター・集じんフィルター・脱臭フィルター・Ag+イオンカートリッジ・プレフィルターの交換時期と品番を公式データと取扱説明書から一覧化。',
     canonical: '/guide/sharp-filter-schedule/', ds, crumbs: [{ name: 'シャープの交換時期' }], body,
+  });
+}
+
+function sharpCareGuide(ds) {
+  const U = '/guide/sharp-humidifier-filter-care/';
+  const humid = ds.parts.filter(p => p.kind === 'humid' && p.life && /^加湿/.test(p.name)).sort((a, b) => b.models.length - a.models.length);
+  const body = `
+<h1 class="h1">シャープ加湿空気清浄機の加湿フィルターの洗い方（クエン酸・重曹）</h1>
+<p class="lead">加湿フィルターに白い固まりが付いた、吹き出す風がにおう。そんなときは、買い替える前にまず洗います。シャープの加湿フィルターは約10年もつ前提ですが、それは定期的にお手入れした場合の話です。手順と分量は、シャープ公式のお手入れページと取扱説明書の記載どおりにまとめました。</p>
+
+<h2 class="h2">お手入れの頻度</h2>
+<table class="tbl freq">
+<thead><tr><th>部分</th><th>頻度</th><th>方法</th></tr></thead>
+<tbody>
+<tr><th>タンク</th><td>給水のたび</td><td>少量の水を入れて振り洗い。キャップのゴム部分も洗います。</td></tr>
+<tr><th>加湿フィルター・トレー</th><td>約1カ月に1回</td><td>お手入れランプが点灯したとき、吹き出し口からにおうときも。下の手順で洗います。</td></tr>
+<tr><th>後ろパネル・センサー部</th><td>約1カ月に1回</td><td>掃除機でほこりを吸い取ります。</td></tr>
+<tr><th>集じん・脱臭フィルター</th><td>においが気になったとき</td><td>掃除機で表面のほこりを吸い取るだけ。<strong>水洗い・天日干しはしません。</strong></td></tr>
+<tr><th>使い捨てプレフィルター</th><td>約1カ月に1回</td><td>洗わずに新しいものと交換します。</td></tr>
+</tbody></table>
+<p class="sub">取扱説明書（KI-SS50）の記載。機種によって細部が異なるので、お使いの機種の取扱説明書もあわせて確認してください。</p>
+
+<h2 class="h2">クエン酸で洗う（白い固まり・水アカ）</h2>
+<ol class="steps">
+<li>水またはぬるま湯（<strong>40℃以下</strong>）1Lに、クエン酸を<strong>約6g</strong>（大さじ約2/3）溶かします。</li>
+<li>加湿フィルターとトレーを<strong>約2時間</strong>つけ置きします。</li>
+<li>クエン酸が残らないように、よくすすぎます。</li>
+<li>汚れがひどいときは、何回か繰り返します。</li>
+</ol>
+
+<h2 class="h2">重曹で洗う（クエン酸のあとも水アカやにおいが残るとき）</h2>
+<ol class="steps">
+<li>水1Lに、重曹を<strong>約36g</strong>（大さじ約4）溶かします。</li>
+<li><strong>30〜60分</strong>つけ置きします。</li>
+<li>重曹が残らないように、よくすすぎます。</li>
+</ol>
+
+<h2 class="h2">やってはいけないこと</h2>
+<ul class="notes">
+<li><strong>クエン酸と重曹を混ぜない。</strong>泡が大量に出て、洗浄効果がなくなります。別々につけ置きします。</li>
+<li>クエン酸や重曹が残ったまま使わない。においや変形・変色の原因になります。</li>
+<li>水アカや白い固まりが付いたまま使わない。水漏れや異常音の原因になります。</li>
+<li>加湿フィルターを分解して洗わない。形がくずれて加湿能力が落ちます。強くこするのも避けます。</li>
+<li>シンナー・ベンジン・アルコール・漂白剤・クレンザーは使わない。</li>
+<li>集じんフィルター・脱臭フィルターは水洗いしない。機能がなくなります。</li>
+</ul>
+<p class="sub">使い捨て加湿プレフィルターを付けている場合は、洗わずに新しいものに交換します。水やフィルターに赤・黄・白の色が付くのは、水道水のミネラルや鉄分によるもので、故障ではありません。</p>
+
+<h2 class="h2">古い機種は分量が違います</h2>
+<p>KC-C150・C100・C70 や KC-35C1 などの古い機種の公式ページでは、においを取る方法が「台所用合成洗剤（粉末）を水1Lに約9g・30〜60分」「重曹を水1Lに約60g・約30分」となっています。クエン酸（1Lに約6g・約2時間）は同じです。古い機種は取扱説明書の分量に従ってください。洗ったあとは運転を始めてから、リセットボタンを3秒以上押します。</p>
+
+<h2 class="h2">洗っても落ちないときは交換</h2>
+<p>洗っても水アカやにおいが取れない、変色や型くずれがひどいときは、10年たっていなくても交換します。主な加湿フィルターの部品番号です。</p>
+<table class="tbl parts">
+<thead><tr><th>部品番号</th><th>${esc(ds.priceLabel)}</th><th>交換のめやす</th><th>適用機種</th></tr></thead>
+<tbody>${humid.slice(0, 8).map(p => `<tr><td><a class="pn" href="${partUrl(p.id)}">${p.id}</a>${p.packLabel ? `<br><span class="sub">${esc(p.packLabel)}</span>` : ''}</td><td class="price">${yen(p.price)}</td><td>${esc(p.life.label)}</td><td>${p.models.length}機種</td></tr>`).join('')}</tbody>
+</table>
+<p>自分の機種の部品番号は、<a href="${makerUrl(ds)}">機種一覧</a>から形名のページを開くと確認できます。ほかの消耗品の交換時期は「<a href="/guide/sharp-filter-schedule/">シャープのフィルター交換時期一覧</a>」にまとめています。</p>
+
+<p class="src">出典：<a href="https://jp.sharp/support/advice/air_purifier/care_06.html" rel="noopener" target="_blank">シャープ 空気清浄機のお手入れ（加湿フィルター・トレーの汚れやニオイが取れないとき）</a>、<a href="https://jp.sharp/restricted/support/manual/air_purifier/kiss50_mn.pdf" rel="noopener" target="_blank">KI-SS50 取扱説明書</a>、<a href="https://jp.sharp/support/advice/air_purifier/care_kc_c02a.html" rel="noopener" target="_blank">KC-C150・C100・C70 加湿フィルターのお手入れ</a>、<a href="https://jp.sharp/support/advice/air_purifier/care_kc_c05a.html" rel="noopener" target="_blank">KC-35C1 加湿フィルターのお手入れ</a>（2026/10/23確認）</p>`;
+  return layout({
+    title: 'シャープ加湿空気清浄機の加湿フィルターの洗い方｜クエン酸6g・2時間、重曹の分量と注意点',
+    desc: 'シャープ加湿空気清浄機の加湿フィルターとトレーのお手入れ方法。クエン酸は水1Lに約6gで約2時間、重曹は約36gで30〜60分。混ぜてはいけない理由や、洗っても落ちないときの交換用部品番号も。',
+    canonical: U, ds, crumbs: [{ name: '加湿フィルターの洗い方' }], body,
   });
 }
 
@@ -607,6 +673,7 @@ for (const ds of datasets) {
   for (const p of ds.parts) { write(`parts/${slug(p.id)}/index.html`, partPage(ds, p)); urls.push(partUrl(p.id)); }
   if (ds.maker.id === 'dainichi') { write('guide/dainichi-filter-cost/index.html', costGuide(ds)); urls.push('/guide/dainichi-filter-cost/'); }
   if (ds.maker.id === 'sharp') { write('guide/sharp-filter-schedule/index.html', sharpScheduleGuide(ds)); urls.push('/guide/sharp-filter-schedule/'); }
+  if (ds.maker.id === 'sharp') { write('guide/sharp-humidifier-filter-care/index.html', sharpCareGuide(ds)); urls.push('/guide/sharp-humidifier-filter-care/'); }
 }
 staticPages();
 assets();
