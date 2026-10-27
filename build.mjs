@@ -23,6 +23,9 @@ const KINDS = {
   ion:      { label: 'イオン発生ユニット', cls: 'b-air', order: 6 },
   pre:      { label: 'プレフィルター', cls: 'b-disp', order: 7 },
   humidpre: { label: '加湿プレフィルター', cls: 'b-disp', order: 8 },
+  jokin:    { label: '除菌フィルター', cls: 'b-air', order: 4 },
+  agatt:    { label: 'Ag+抗菌アタッチメント', cls: 'b-air', order: 5 },
+  tray:     { label: 'トレイカバー', cls: 'b-disp', order: 9 },
 };
 
 // ---------- データ読み込み ----------
@@ -149,7 +152,7 @@ ${ld}
     </form>
   </div>
   <nav class="gnav"><div class="wrap">
-    ${datasets.map(d => `<a href="${makerUrl(d)}">${esc(d.maker.name)} ${esc(d.maker.category)}</a>`).join('')}<a href="/parts/">部品番号一覧</a><a href="/guide/dainichi-filter-cost/">フィルター費用の比較</a><a href="/guide/sharp-filter-schedule/">シャープの交換時期</a>
+    ${datasets.map(d => `<a href="${makerUrl(d)}">${esc(d.maker.name)} ${esc(d.maker.category)}</a>`).join('')}<a href="/parts/">部品番号一覧</a><a href="/guide/dainichi-filter-life/">ダイニチ交換時期</a><a href="/guide/sharp-filter-schedule/">シャープ交換時期</a><a href="/guide/dainichi-filter-cost/">費用比較</a>
   </div></nav>
 </header>
 ${crumbs.length ? `<div class="wrap crumbs"><a href="/">トップ</a>${crumbs.map(c => c.url ? ` &gt; <a href="${c.url}">${esc(c.name)}</a>` : ` &gt; <span>${esc(c.name)}</span>`).join('')}</div>` : ''}
@@ -195,7 +198,7 @@ function modelPage(ds, m) {
   const primary = ps.find(p => (ds.primaryKinds || []).includes(p.kind));
 
   const partRows = ps.map(p => `<tr><th>${esc(p.kind === 'vapor' ? `気化フィルター（${p.type === 'care' ? 'お手入れ' : '使い捨て'}）` : KINDS[p.kind].label)}</th>
-<td><a class="pn" href="${partUrl(p.id)}">${p.id}</a> ${typeBadge(p)}<br><span class="sub">${esc(p.name)}${p.packLabel ? `（${esc(p.packLabel)}）` : p.pack > 1 ? `（${p.pack}個入り）` : ''}・${esc(lifeLabel(p))}</span></td>
+<td><a class="pn" href="${partUrl(p.id)}">${p.id}</a> ${typeBadge(p)}<br><span class="sub">${esc(p.name)}${p.packLabel ? (p.name.includes(p.packLabel) ? '' : `（${esc(p.packLabel)}）`) : p.pack > 1 && !/\d(個|枚)入/.test(p.name) ? `（${p.pack}個入り）` : ''}・${esc(lifeLabel(p))}</span></td>
 ${hasPrice ? `<td class="price">${p.price ? yen(p.price) : '—'}</td>` : ''}
 <td class="act">${amzLink(ds, p, 'Amazon')}${p.source ? ` / <a href="${esc(p.source)}" rel="noopener" target="_blank">直販</a>` : ''}</td></tr>`).join('\n');
 
@@ -203,7 +206,7 @@ ${hasPrice ? `<td class="price">${p.price ? yen(p.price) : '—'}</td>` : ''}
   let costHtml = '';
   const care = ps.find(p => p.kind === 'vapor' && p.type === 'care');
   const disp = ps.find(p => p.kind === 'vapor' && p.type === 'disposable');
-  if (ds.showCost && care && disp) {
+  if (ds.showCost && care && disp && !care.noCost) {
     const c = costs(care, disp);
     costHtml = `
 <h2 class="h2">お手入れタイプと使い捨てタイプ、どちらが得か</h2>
@@ -271,7 +274,7 @@ ${partRows}
 </table>
 <p class="sub">${hasPrice ? (ds.priceLabel ? `${priceLabel}は${esc(ds.sourceKind || 'メーカーカタログ')}記載の税込価格です。` : '直販価格はメーカー直販サイトの税込価格です。') : ''}Amazonの価格は出品者によって変わります。</p>
 
-${costHtml}${freqHtml}${ds.maker.id === 'sharp' && ps.some(p => p.kind === 'humid') ? `<p>加湿フィルターは、交換する前に洗うと長持ちします。→ <a href="/guide/sharp-humidifier-filter-care/">クエン酸・重曹での洗い方</a></p>` : ''}
+${costHtml}${freqHtml}${ds.maker.id === 'dainichi' ? `<p>フィルターの交換時期の条件（「最大5シーズン」は月1回のクエン酸洗浄が前提）は → <a href="/guide/dainichi-filter-life/">ダイニチ加湿器のフィルター交換時期</a></p>` : ''}${ds.maker.id === 'sharp' && ps.some(p => p.kind === 'humid') ? `<p>加湿フィルターは、交換する前に洗うと長持ちします。→ <a href="/guide/sharp-humidifier-filter-care/">クエン酸・重曹での洗い方</a></p>` : ''}
 
 <h2 class="h2">買う前に確認すること</h2>
 <ul class="notes">
@@ -322,7 +325,7 @@ ${p.variants ? `<tr><th>入数違い</th><td>${esc(p.variants)}</td></tr>` : ''}
 </div>
 
 ${pair ? `<h2 class="h2">${pair.id}（${esc(pair.typeLabel)}）との違い</h2>
-<p>同じ機種で使える気化フィルターに、${p.type === 'care' ? '洗わずに捨てられる使い捨てタイプ' : '洗って長く使うお手入れタイプ'}の <a href="${partUrl(pair.id)}">${pair.id}</a>（${yen(pair.price)}・${esc(pair.life.label)}）があります。5シーズン使った場合の費用比較は<a href="/guide/dainichi-filter-cost/">こちら</a>。</p>` : ''}
+<p>同じ機種で使える気化フィルターに、${p.type === 'care' ? '洗わずに捨てられる使い捨てタイプ' : '洗って長く使うお手入れタイプ'}の <a href="${partUrl(pair.id)}">${pair.id}</a>（${yen(pair.price)}・${esc(pair.life.label)}）があります。${p.noCost ? '' : '5シーズン使った場合の費用比較は<a href="/guide/dainichi-filter-cost/">こちら</a>。'}</p>` : ''}
 
 <h2 class="h2">適用機種一覧（${p.models.length}機種）</h2>
 <p class="sub">${p.source ? 'メーカー直販サイトの適用機種表' : ds.sourceUrl ? `${esc(ds.sourceKind || 'メーカー総合カタログ')}の適用機種表` : '各機種の取扱説明書の記載'}を、シリーズ別に並べたものです。</p>
@@ -428,7 +431,7 @@ function searchPage() {
 // ---------- ガイド ----------
 function costGuide(ds) {
   const parts = ds.parts;
-  const pairs = parts.filter(p => p.kind === 'vapor' && p.type === 'care').map(c => [c, ds.partById[c.pairId]]);
+  const pairs = parts.filter(p => p.kind === 'vapor' && p.type === 'care' && !p.noCost).map(c => [c, ds.partById[c.pairId]]);
   const scenarios = [[6, 5], [4, 5], [9, 5], [6, 1]];
   const label = c => c.models.some(m => /^HD-LX|^HD-ELXC/.test(m)) ? 'LX・LXC・ELXCタイプ' : c.models.some(m => /^HD-N3|^HD-RX3/.test(m)) ? 'N3xx・RX3xx・30xx系など' : 'RX・RXT・N5xx〜9xx系など';
   const mid = pairs.find(([c]) => c.id === 'H060518') || pairs[0];
@@ -462,6 +465,62 @@ function costGuide(ds) {
     title: 'ダイニチ加湿器フィルター お手入れタイプと使い捨てタイプの費用比較（5シーズン総額）',
     desc: 'ダイニチ加湿器の気化フィルター、お手入れタイプ（H060518等）と使い捨てタイプ（H060524等）を5シーズン使った総額で比較。メーカー直販価格と交換めやすから計算。',
     canonical: '/guide/dainichi-filter-cost/', ds, crumbs: [{ name: 'フィルター費用の比較' }], body,
+  });
+}
+
+function dainichiLifeGuide(ds) {
+  const U = '/guide/dainichi-filter-life/';
+  const vapor = ds.parts.filter(p => p.kind === 'vapor');
+  const cares = vapor.filter(p => p.type === 'care');
+  const label = c => c.models.some(m => /^HD-(1500F|1800F|2400F|1[58]\d|24\d|PC|PN)/.test(m)) ? '大型（HD-152・PC・PNタイプなど）' : c.models.some(m => /^HD-LX|^HD-ELXC/.test(m)) ? 'LX・LXC・ELXCタイプ' : c.models.some(m => /^HD-N3|^HD-RX3/.test(m)) ? 'N3xx・RX3xx・30xx系など' : 'RX・RXT・ERXT・N5xx〜9xx系など';
+  const others = ds.parts.filter(p => p.kind !== 'vapor');
+  const body = `
+<h1 class="h1">ダイニチ加湿器のフィルター交換時期｜お手入れタイプは最大5シーズン、使い捨ては3カ月</h1>
+<p class="lead">ダイニチのハイブリッド式加湿器の気化フィルターには、洗って使う「お手入れタイプ（青）」と、洗わずに替える「使い捨てタイプ（赤紫）」の2種類があります。交換の時期はタイプでまったく違います。ダイニチ直営のWebShopに書かれている条件をそのまま整理しました。</p>
+
+<h2 class="h2">交換のめやす</h2>
+<table class="tbl freq">
+<thead><tr><th>部品</th><th>交換のめやす</th><th>メーカーの前提条件</th></tr></thead>
+<tbody>
+<tr><th>抗菌気化フィルター<br><span class="sub">お手入れタイプ（青）</span></th><td><strong>最大5シーズン</strong></td><td>1シーズン6カ月・1日8時間運転・水道水の硬度50mg/L（全国平均）・<strong>月1回クエン酸洗浄</strong>した場合</td></tr>
+<tr><th>カンタン取替えフィルター<br><span class="sub">使い捨てタイプ（赤紫）</span></th><td><strong>3カ月</strong></td><td>1日8時間運転・水道水の硬度50mg/Lの場合。洗浄は不要</td></tr>
+<tr><th>抗菌エアフィルター・Ag+抗菌アタッチメント・トレイカバー・除菌フィルター</th><td>記載なし</td><td>販売ページに交換周期の記載はありません。取扱説明書で確認してください</td></tr>
+</tbody></table>
+
+<h2 class="h2">「最大5シーズン」は洗っている場合の話</h2>
+<ul class="notes">
+<li>お手入れタイプの5シーズンは、<strong>月に1回クエン酸で洗浄した場合</strong>の最大値です。クエン酸で洗わずに使い続けると寿命が短くなり、<strong>1シーズンに満たなくても交換が必要になる</strong>ことがあるとメーカーは書いています。</li>
+<li>水道水の硬度が高い地域では、5シーズンより早くなることがあります。</li>
+<li>めやすの期間内でも、汚れや水アカが落ちなくなったとき、傷みや型くずれがひどいときは交換します。</li>
+<li>運転中にフィルターの上部が乾いているときは、クエン酸洗浄をします。何度洗っても上部が硬く乾いたままなら交換のサインです（ダイニチのよくある質問より）。</li>
+</ul>
+
+<h2 class="h2">機種別の部品番号と価格</h2>
+<table class="tbl parts">
+<thead><tr><th>対象</th><th>お手入れタイプ</th><th>使い捨てタイプ</th></tr></thead>
+<tbody>${cares.map(c => { const d = ds.partById[c.pairId]; return `<tr><td>${esc(label(c))}<br><span class="sub">${c.models.length}機種</span></td><td><a class="pn" href="${partUrl(c.id)}">${c.id}</a><br><span class="price">${yen(c.price)}</span>${c.pack > 1 ? `<span class="sub">（${c.pack}個入り）</span>` : ''}</td><td>${d ? `<a class="pn" href="${partUrl(d.id)}">${d.id}</a><br><span class="price">${yen(d.price)}</span><span class="sub">（${d.pack}個入り）</span>` : '—'}</td></tr>`; }).join('')}</tbody>
+</table>
+<p class="sub">価格はダイニチWebShopの税込価格（${fmtDate(ds.checkedAt)}確認）。自分の型番に合う部品は、<a href="${makerUrl(ds)}">機種一覧</a>から型番のページを開くと確認できます。</p>
+<p>お手入れタイプと使い捨てタイプで5シーズンの総額がいくら違うかは、「<a href="/guide/dainichi-filter-cost/">お手入れタイプと使い捨てタイプの費用比較</a>」で計算しています。</p>
+
+<h2 class="h2">ほかの消耗品</h2>
+<table class="tbl parts">
+<thead><tr><th>部品番号</th><th>部品名</th><th>直販価格</th><th>適用機種</th></tr></thead>
+<tbody>${others.map(p => `<tr><td><a class="pn" href="${partUrl(p.id)}">${p.id}</a></td><td>${esc(p.name)}${p.typeLabel && p.kind === 'agatt' ? `（${esc(p.typeLabel)}）` : ''}${p.packLabel && !p.name.includes(p.packLabel) ? `<span class="sub">（${esc(p.packLabel)}）</span>` : ''}</td><td class="price">${yen(p.price)}</td><td>${p.models.length}機種</td></tr>`).join('')}</tbody>
+</table>
+
+<h2 class="h2">買うときの注意</h2>
+<ul class="notes">
+<li>ダイニチは、ダイニチ製を模した安価なコピー商品が出回っていると注意しています。純正品以外のフィルターを使うと規定の湿度まで上がらないことがあり、それが原因の不具合は<strong>保証期間内でも有償</strong>になります。</li>
+<li>フィルターなどの消耗部品の保有期間は製造打ち切り後14年です。検索しても出てこない古い型式は、部品の供給が終わっている可能性があります。</li>
+<li>型式は本体の側面または後面のシールに書かれています。末尾の「E3」「E6」なども含めて確認してください。</li>
+</ul>
+
+<p class="src">出典：<a href="${esc(ds.maker.officialShop)}" rel="noopener" target="_blank">ダイニチWebShop 加湿器 別売部品</a>（各部品ページの適用機種・交換の期間の記載）、<a href="https://www.dainichi-net.co.jp/support/faq/hd/hd1504_2.html" rel="noopener" target="_blank">ダイニチ よくあるご質問（加湿器）</a>（${fmtDate(ds.checkedAt)}確認）</p>`;
+  return layout({
+    title: 'ダイニチ加湿器のフィルター交換時期｜お手入れタイプ最大5シーズン・使い捨て3カ月の条件',
+    desc: 'ダイニチ加湿器の抗菌気化フィルター（お手入れタイプ）は最大5シーズン、カンタン取替えフィルター（使い捨て）は3カ月。メーカーの前提条件、交換のサイン、機種別の部品番号と直販価格をまとめました。',
+    canonical: U, ds, crumbs: [{ name: 'ダイニチの交換時期' }], body,
   });
 }
 
@@ -672,6 +731,7 @@ for (const ds of datasets) {
   for (const m of ds.modelList) { write(`${ds.maker.id}/${slug(m.id)}/index.html`, modelPage(ds, m)); urls.push(modelUrl(ds, m.id)); nModels++; }
   for (const p of ds.parts) { write(`parts/${slug(p.id)}/index.html`, partPage(ds, p)); urls.push(partUrl(p.id)); }
   if (ds.maker.id === 'dainichi') { write('guide/dainichi-filter-cost/index.html', costGuide(ds)); urls.push('/guide/dainichi-filter-cost/'); }
+  if (ds.maker.id === 'dainichi') { write('guide/dainichi-filter-life/index.html', dainichiLifeGuide(ds)); urls.push('/guide/dainichi-filter-life/'); }
   if (ds.maker.id === 'sharp') { write('guide/sharp-filter-schedule/index.html', sharpScheduleGuide(ds)); urls.push('/guide/sharp-filter-schedule/'); }
   if (ds.maker.id === 'sharp') { write('guide/sharp-humidifier-filter-care/index.html', sharpCareGuide(ds)); urls.push('/guide/sharp-humidifier-filter-care/'); }
 }
