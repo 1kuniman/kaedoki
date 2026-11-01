@@ -274,7 +274,7 @@ ${partRows}
 </table>
 <p class="sub">${hasPrice ? (ds.priceLabel ? `${priceLabel}は${esc(ds.sourceKind || 'メーカーカタログ')}記載の税込価格です。` : '直販価格はメーカー直販サイトの税込価格です。') : ''}Amazonの価格は出品者によって変わります。</p>
 
-${costHtml}${freqHtml}${ds.maker.id === 'dainichi' ? `<p>フィルターの交換時期の条件（「最大5シーズン」は月1回のクエン酸洗浄が前提）は → <a href="/guide/dainichi-filter-life/">ダイニチ加湿器のフィルター交換時期</a></p>` : ''}${ds.maker.id === 'sharp' && ps.some(p => p.kind === 'humid') ? `<p>加湿フィルターは、交換する前に洗うと長持ちします。→ <a href="/guide/sharp-humidifier-filter-care/">クエン酸・重曹での洗い方</a></p>` : ''}
+${costHtml}${freqHtml}${ds.maker.id === 'dainichi' ? `<p>フィルターの交換時期の条件（「最大5シーズン」は月1回のクエン酸洗浄が前提）は → <a href="/guide/dainichi-filter-life/">ダイニチ加湿器のフィルター交換時期</a></p><p>お手入れタイプの洗い方（クエン酸4Lに約25g・30分〜2時間）は → <a href="/guide/dainichi-filter-citric-acid/">抗菌気化フィルターの洗い方</a></p>` : ''}${ds.maker.id === 'sharp' && ps.some(p => p.kind === 'humid') ? `<p>加湿フィルターは、交換する前に洗うと長持ちします。→ <a href="/guide/sharp-humidifier-filter-care/">クエン酸・重曹での洗い方</a></p>` : ''}
 
 <h2 class="h2">買う前に確認すること</h2>
 <ul class="notes">
@@ -492,6 +492,7 @@ function dainichiLifeGuide(ds) {
 <li>お手入れタイプの5シーズンは、<strong>月に1回クエン酸で洗浄した場合</strong>の最大値です。クエン酸で洗わずに使い続けると寿命が短くなり、<strong>1シーズンに満たなくても交換が必要になる</strong>ことがあるとメーカーは書いています。</li>
 <li>水道水の硬度が高い地域では、5シーズンより早くなることがあります。</li>
 <li>めやすの期間内でも、汚れや水アカが落ちなくなったとき、傷みや型くずれがひどいときは交換します。</li>
+<li>クエン酸洗浄の分量と手順は「<a href="/guide/dainichi-filter-citric-acid/">抗菌気化フィルターの洗い方</a>」にまとめています。</li>
 <li>運転中にフィルターの上部が乾いているときは、クエン酸洗浄をします。何度洗っても上部が硬く乾いたままなら交換のサインです（ダイニチのよくある質問より）。</li>
 </ul>
 
@@ -521,6 +522,66 @@ function dainichiLifeGuide(ds) {
     title: 'ダイニチ加湿器のフィルター交換時期｜お手入れタイプ最大5シーズン・使い捨て3カ月の条件',
     desc: 'ダイニチ加湿器の抗菌気化フィルター（お手入れタイプ）は最大5シーズン、カンタン取替えフィルター（使い捨て）は3カ月。メーカーの前提条件、交換のサイン、機種別の部品番号と直販価格をまとめました。',
     canonical: U, ds, crumbs: [{ name: 'ダイニチの交換時期' }], body,
+  });
+}
+
+function dainichiCareGuide(ds) {
+  const U = '/guide/dainichi-filter-citric-acid/';
+  const cares = ds.parts.filter(p => p.kind === 'vapor' && p.type === 'care');
+  const body = `
+<h1 class="h1">ダイニチ加湿器の抗菌気化フィルターの洗い方｜クエン酸は4Lに25g、つけ置き30分〜2時間</h1>
+<p class="lead">ダイニチのお手入れタイプのフィルターが「最大5シーズン」もつのは、月1回クエン酸で洗った場合です。分量・時間・頻度を、ダイニチの取扱説明書と公式のよくある質問の記載どおりにまとめました。</p>
+
+<h2 class="h2">洗う頻度</h2>
+<table class="tbl freq">
+<thead><tr><th>タイミング</th><th>やること</th></tr></thead>
+<tbody>
+<tr><th>給水のたび</th><td>タンクに少し水を入れて振り洗いし、新しい水道水に入れ替える</td></tr>
+<tr><th>お手入れサイン（赤）が点滅したとき</th><td>抗菌気化フィルターを水洗いし、やわらかい布で汚れをふく。トレイも水洗い<br><span class="sub">サインは電源プラグを挿している時間が累計約2週間で点滅します</span></td></tr>
+<tr><th>お手入れの2回に1回<br>（1カ月に1回程度）</th><td><strong>クエン酸で洗浄する</strong></td></tr>
+<tr><th>吹き出す風が臭うとき</th><td>重曹（機種によっては指定の洗剤）で洗浄する</td></tr>
+<tr><th>運転中にフィルターの上部が乾いているとき</th><td>クエン酸で洗浄する。くり返しても上部が硬く乾くなら交換</td></tr>
+</tbody></table>
+<p class="sub">使用時間が長い場合や、水道水の硬度が高い地域では、間隔を早めるようメーカーは案内しています。</p>
+
+<h2 class="h2">クエン酸での洗い方（定期的に水アカを取る）</h2>
+<ol class="steps">
+<li>運転を止め、電源プラグを抜く。タンクを取り出し、トレイを引き出して抗菌気化フィルターを取り出す。</li>
+<li>ぬるま湯（<strong>40℃以下</strong>）<strong>4.0L</strong>に、クエン酸を<strong>約25g（大さじ2杯半）</strong>溶かす。</li>
+<li>抗菌気化フィルターを<strong>約30分〜2時間</strong>つけ置きする。水アカが取れにくいときは長め（最長2時間）に。</li>
+<li>水道水でしっかりすすぐ（<strong>目安2分以上</strong>）。</li>
+<li>フィルター・トレイ・タンクを本体に戻し、お手入れリセットボタンを「ピー」と鳴るまで約3秒押す。</li>
+</ol>
+
+<h2 class="h2">臭いが気になるとき</h2>
+<p>吹き出す風が臭うときは、ぬるま湯4.0Lに<strong>重曹 約150g</strong>を溶かし、<strong>約60分</strong>つけ置きしてから2分以上すすぎます（HD-LXシリーズなどの取扱説明書の記載）。</p>
+<p class="sub">古い機種（HD-5017E5など）の取扱説明書では、臭いのときは重曹ではなく指定の洗剤（花王「ワイドマジックリン」を4.0Lあたり約36g・約60分）となっています。お使いの機種の取扱説明書を確認してください。</p>
+
+<h2 class="h2">やってはいけないこと</h2>
+<ul class="notes">
+<li><strong>クエン酸と重曹（または洗剤）を一緒に入れない。</strong></li>
+<li>塩素系・酸性タイプの洗剤は使わない。有毒ガスが発生するおそれがあります。</li>
+<li>40℃以上のお湯は使わない。部品が壊れる原因になります。</li>
+<li>クエン酸を濃くしすぎない。濃度が高いと部品破損の原因になります。</li>
+<li>フィルターに強い力を加えない。破れるおそれがあります。</li>
+<li>すすぎが足りないと洗剤の成分が残り、臭いや故障の原因になります。</li>
+<li>タンクキャップのAg+抗菌アタッチメントEXはクエン酸で洗わない（HD-LXシリーズの取扱説明書）。</li>
+<li>フィルターを外したまま運転しない。</li>
+</ul>
+
+<h2 class="h2">洗っても戻らないときは交換</h2>
+<p>くり返しクエン酸で洗っても上部が硬く乾く、汚れや水アカが落ちない、傷みや型くずれがひどいときは交換します。洗うのが面倒なら、洗浄不要の使い捨てタイプ（1個3カ月）に切り替える方法もあります。</p>
+<table class="tbl parts">
+<thead><tr><th>お手入れタイプ</th><th>直販価格</th><th>適用機種</th></tr></thead>
+<tbody>${cares.map(p => `<tr><td><a class="pn" href="${partUrl(p.id)}">${p.id}</a>${p.pack > 1 ? `<span class="sub">（${p.pack}個入り）</span>` : ''}</td><td class="price">${yen(p.price)}</td><td>${p.models.length}機種</td></tr>`).join('')}</tbody>
+</table>
+<p>交換時期の条件は「<a href="/guide/dainichi-filter-life/">ダイニチ加湿器のフィルター交換時期</a>」、お手入れタイプと使い捨てタイプの5シーズンの費用差は「<a href="/guide/dainichi-filter-cost/">費用比較</a>」にまとめています。自分の機種の部品番号は<a href="${makerUrl(ds)}">機種一覧</a>から確認できます。</p>
+
+<p class="src">出典：<a href="https://www.dainichi-net.co.jp/uploads/manual/humidifier/hd-lx1022_1222.pdf" rel="noopener" target="_blank">HD-LX1022・LX1222 取扱説明書</a>、<a href="https://www.dainichi-net.co.jp/uploads/manual/humidifier/hd5017e5.pdf" rel="noopener" target="_blank">HD-5017E5 取扱説明書</a>、<a href="https://www.dainichi-net.co.jp/support/faq/hd/hd1206_1.html" rel="noopener" target="_blank">ダイニチ よくあるご質問（定期的に水アカを取る）</a>、<a href="https://www.dainichi-net.co.jp/support/faq/hd/hd222.html" rel="noopener" target="_blank">同（お手入れサインが点滅している）</a>（2026/11/01確認）</p>`;
+  return layout({
+    title: 'ダイニチ加湿器のフィルターの洗い方｜クエン酸4Lに25g・30分〜2時間、重曹の分量と注意点',
+    desc: 'ダイニチ加湿器の抗菌気化フィルターのクエン酸洗浄。ぬるま湯4Lにクエン酸約25g（大さじ2杯半）で30分〜2時間、臭いは重曹約150gで約60分。頻度、やってはいけないこと、交換の目安を取扱説明書からまとめました。',
+    canonical: U, ds, crumbs: [{ name: 'ダイニチのフィルターの洗い方' }], body,
   });
 }
 
@@ -732,6 +793,7 @@ for (const ds of datasets) {
   for (const p of ds.parts) { write(`parts/${slug(p.id)}/index.html`, partPage(ds, p)); urls.push(partUrl(p.id)); }
   if (ds.maker.id === 'dainichi') { write('guide/dainichi-filter-cost/index.html', costGuide(ds)); urls.push('/guide/dainichi-filter-cost/'); }
   if (ds.maker.id === 'dainichi') { write('guide/dainichi-filter-life/index.html', dainichiLifeGuide(ds)); urls.push('/guide/dainichi-filter-life/'); }
+  if (ds.maker.id === 'dainichi') { write('guide/dainichi-filter-citric-acid/index.html', dainichiCareGuide(ds)); urls.push('/guide/dainichi-filter-citric-acid/'); }
   if (ds.maker.id === 'sharp') { write('guide/sharp-filter-schedule/index.html', sharpScheduleGuide(ds)); urls.push('/guide/sharp-filter-schedule/'); }
   if (ds.maker.id === 'sharp') { write('guide/sharp-humidifier-filter-care/index.html', sharpCareGuide(ds)); urls.push('/guide/sharp-humidifier-filter-care/'); }
 }
