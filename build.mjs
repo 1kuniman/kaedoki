@@ -26,6 +26,9 @@ const KINDS = {
   jokin:    { label: '除菌フィルター', cls: 'b-air', order: 4 },
   agatt:    { label: 'Ag+抗菌アタッチメント', cls: 'b-air', order: 5 },
   tray:     { label: 'トレイカバー', cls: 'b-disp', order: 9 },
+  pfilter:  { label: '交換フィルター', cls: 'b-dust', order: 2 },
+  vfilter:  { label: '掃除機フィルター', cls: 'b-dust', order: 3 },
+  battery:  { label: 'バッテリー', cls: 'b-air', order: 1 },
   bio:      { label: 'バイオ抗体／チタンアパタイト', cls: 'b-air', order: 5 },
   streamer: { label: 'ストリーマユニット', cls: 'b-air', order: 6 },
 };
@@ -63,7 +66,7 @@ const amazonUrl = q => {
   if (cfg.amazonTag) u.searchParams.set('tag', cfg.amazonTag);
   return u.toString();
 };
-const slug = s => s.toLowerCase();
+const slug = s => s.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-|-$/g, '');
 // サイドバー用：部品が多いメーカーは適用機種の多い主要部品12点に絞る
 const sideParts = ds => (ds.parts.length <= 12 ? [...ds.parts] : [...ds.parts].filter(p => (ds.primaryKinds || []).includes(p.kind) || p.kind === 'ag').sort((a, b) => b.models.length - a.models.length).slice(0, 12))
   .sort((a, b) => KINDS[a.kind].order - KINDS[b.kind].order || b.models.length - a.models.length);
@@ -200,7 +203,7 @@ function modelPage(ds, m) {
   const primary = ps.find(p => (ds.primaryKinds || []).includes(p.kind));
 
   const partRows = ps.map(p => `<tr><th>${esc(p.kind === 'vapor' ? `気化フィルター（${p.type === 'care' ? 'お手入れ' : '使い捨て'}）` : KINDS[p.kind].label)}</th>
-<td><a class="pn" href="${partUrl(p.id)}">${p.id}</a> ${typeBadge(p)}<br><span class="sub">${esc(p.name)}${p.packLabel ? (p.name.includes(p.packLabel) ? '' : `（${esc(p.packLabel)}）`) : p.pack > 1 && !/\d(個|枚)入/.test(p.name) ? `（${p.pack}個入り）` : ''}・${esc(lifeLabel(p))}</span></td>
+<td><a class="pn" href="${partUrl(p.id)}">${p.id}</a> ${typeBadge(p)}<br><span class="sub">${esc(p.name)}${p.packLabel ? (p.name.includes(p.packLabel) ? '' : `（${esc(p.packLabel)}）`) : p.pack > 1 && !/\d(個|枚)入/.test(p.name) ? `（${p.pack}個入り）` : ''}・${esc(lifeLabel(p))}${p.typeLabel && !['vapor', 'agatt', 'bio'].includes(p.kind) ? `<br>${esc(p.typeLabel)}` : ''}${p.stockNote ? `<br><strong>${esc(p.stockNote)}</strong>` : ''}</span></td>
 ${hasPrice ? `<td class="price">${p.price ? yen(p.price) : '—'}</td>` : ''}
 <td class="act">${amzLink(ds, p, 'Amazon')}${p.source ? ` / <a href="${esc(p.source)}" rel="noopener" target="_blank">直販</a>` : ''}</td></tr>`).join('\n');
 
@@ -250,15 +253,15 @@ ${buckets.map(b => { const xs = ps.filter(b.test); return xs.length ? `<tr><th>$
   }
 
   const siblings = primary ? primary.models.filter(x => x !== m.id && ds.hasPage.has(x)) : [];
-  const title = `${m.id} の交換フィルター・部品番号｜${maker.name} ${maker.category}`;
+  const title = ds.modelTitle ? ds.modelTitle.replace(/\{id\}/g, m.id) : `${m.id} の交換フィルター・部品番号｜${maker.name} ${maker.category}`;
   const keyIds = ps.filter(p => (ds.primaryKinds || []).includes(p.kind) || p.kind === 'air').map(p => p.id);
   const desc = `${maker.name}の${maker.category} ${m.id} に合う交換フィルターの部品番号は${keyIds.join('・')}。${hasPrice ? 'メーカー直販価格、' : ''}交換のめやすをメーカー資料からまとめています。`;
   const srcUrl = m.source || ds.sourceUrl || maker.officialShop;
-  const srcName = ds.modelSourceName ? ds.modelSourceName.replace('{id}', m.id) : m.source ? `${maker.name} ${m.id} 取扱説明書（PDF）` : ds.sourceName || `${maker.name} 公式 別売部品ページ`;
-  const srcKind = ds.modelSourceName ? ds.sourceKind : m.source ? '取扱説明書' : ds.sourceKind || 'メーカー直販サイト';
+  const srcName = ds.modelSourceLabel ? ds.modelSourceLabel.replace('{id}', m.id) : ds.modelSourceName ? ds.modelSourceName.replace('{id}', m.id) : m.source ? `${maker.name} ${m.id} 取扱説明書（PDF）` : ds.sourceName || `${maker.name} 公式 別売部品ページ`;
+  const srcKind = (ds.modelSourceName || ds.modelSourceLabel) ? ds.sourceKind : m.source ? '取扱説明書' : ds.sourceKind || 'メーカー直販サイト';
 
   const body = `
-<h1 class="h1">${m.id} の交換フィルター・部品</h1>
+<h1 class="h1">${ds.modelTitle ? `${esc(maker.name)} ${m.id} の交換部品` : `${m.id} の交換フィルター・部品`}</h1>
 <p class="lead">${esc(maker.nameFull)}の${esc(maker.category)}「${m.id}」に適合する純正の交換部品です。${srcKind}の記載（${fmtDate(ds.checkedAt)}確認）にもとづいています。</p>
 
 <table class="tbl spec"><tbody>
@@ -314,7 +317,7 @@ function partPage(ds, p) {
 <h1 class="h1">${p.id} ${esc(p.name)} ${typeBadge(p)}</h1>
 <table class="tbl spec"><tbody>
 <tr><th>部品番号</th><td><strong class="pn-big">${p.id}</strong>${p.replaces ? `<span class="sub">（旧番号 ${p.replaces.join('・')} はこの番号に統合）</span>` : ''}</td></tr>
-<tr><th>部品名</th><td>${esc(p.name)}${p.typeLabel ? `（${esc(p.typeLabel)}）` : ''}</td></tr>
+<tr><th>部品名</th><td>${esc(p.name)}${p.typeLabel ? `（${esc(p.typeLabel)}）` : ''}${p.stockNote ? `<br><strong>${esc(p.stockNote)}</strong>` : ''}</td></tr>
 <tr><th>入数</th><td>${esc(p.packLabel || `${p.pack}個`)}</td></tr>
 ${p.price ? `<tr><th>${ds.priceLabel === '希望小売価格' ? 'メーカー希望小売価格' : ds.priceLabel || 'メーカー直販価格'}</th><td class="price">${yen(p.price)}<span class="sub">（税込・${fmtDate(ds.checkedAt)}確認）</span></td></tr>` : ''}
 <tr><th>交換のめやす</th><td>${esc(lifeLabel(p))}<br><span class="sub">${esc(p.lifeNote)}</span></td></tr>
@@ -388,7 +391,7 @@ function topPage() {
     <button type="submit">部品を調べる</button>
   </form>
   <ul class="suggest" data-suggest-list hidden></ul>
-  <p class="top-hint">型番は本体の側面か背面のシールに書いてあります。「HD-」「KI-」「FU-」「F-」を省いて入れても探せます。ダイキンは「MCK70Z」のように入力します。</p>
+  <p class="top-hint">型番は本体の側面か背面のシールに書いてあります。「HD-」「KI-」「FU-」「F-」を省いて入れても探せます。ダイキンは「MCK70Z」、ダイソンは「TP04」「V8」のように入力します。</p>
 </section>
 
 <h2 class="h2">収録しているメーカー</h2>
@@ -763,6 +766,7 @@ function assets() {
   fs.copyFileSync(path.join(ROOT, 'src-root', 'favicon.svg'), path.join(OUT, 'favicon.svg'));
   const index = [
     ...datasets.flatMap(ds => ds.modelList.map(m => ({ k: m.id, u: modelUrl(ds, m.id), t: 'm', s: `${ds.maker.name}・${m.series.name}` }))),
+    ...datasets.flatMap(ds => Object.entries(ds.aliases || {}).filter(([, id]) => ds.hasPage.has(id)).map(([a, id]) => ({ k: a, u: modelUrl(ds, id), t: 'm', s: `${ds.maker.name} ${id}（型式 ${a}）` }))),
     ...allParts.map(p => ({ k: p.id, u: partUrl(p.id), t: 'p', s: `${p.maker.name} ${p.name}（${shortType(p)}）` })),
   ];
   fs.writeFileSync(path.join(OUT, 'search-index.json'), JSON.stringify(index));

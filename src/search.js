@@ -27,6 +27,8 @@
     });
     // 頭の記号を省いた入力（例：S50）は、当てはまる型番が1つのときだけ直接開く
     if (!exact && loose.length === 1) exact = loose[0];
+    // 末尾の色記号（例：TP04 WS、HP07-IS）を外してもう一度探す
+    if (!exact && !loose.length && !starts.length && !contains.length && /[-\s][A-Z]{2,3}$/i.test(q)) return find(q.replace(/[-\s][A-Z]{2,3}$/i, ''), list);
     return { exact: exact, hits: (exact ? [] : loose).concat(starts, contains) };
   }
   window.Kaedoki = { norm: norm, load: load, find: find };
