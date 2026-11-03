@@ -26,6 +26,8 @@ const KINDS = {
   jokin:    { label: '除菌フィルター', cls: 'b-air', order: 4 },
   agatt:    { label: 'Ag+抗菌アタッチメント', cls: 'b-air', order: 5 },
   tray:     { label: 'トレイカバー', cls: 'b-disp', order: 9 },
+  bio:      { label: 'バイオ抗体／チタンアパタイト', cls: 'b-air', order: 5 },
+  streamer: { label: 'ストリーマユニット', cls: 'b-air', order: 6 },
 };
 
 // ---------- データ読み込み ----------
@@ -152,7 +154,7 @@ ${ld}
     </form>
   </div>
   <nav class="gnav"><div class="wrap">
-    ${datasets.map(d => `<a href="${makerUrl(d)}">${esc(d.maker.name)} ${esc(d.maker.category)}</a>`).join('')}<a href="/parts/">部品番号一覧</a><a href="/guide/dainichi-filter-life/">ダイニチ交換時期</a><a href="/guide/sharp-filter-schedule/">シャープ交換時期</a><a href="/guide/dainichi-filter-cost/">費用比較</a>
+    ${datasets.map(d => `<a href="${makerUrl(d)}">${esc(d.maker.name)}</a>`).join('')}<a href="/parts/">部品番号一覧</a><a href="/guide/dainichi-filter-life/">ダイニチ交換時期</a><a href="/guide/sharp-filter-schedule/">シャープ交換時期</a><a href="/guide/dainichi-filter-cost/">費用比較</a>
   </div></nav>
 </header>
 ${crumbs.length ? `<div class="wrap crumbs"><a href="/">トップ</a>${crumbs.map(c => c.url ? ` &gt; <a href="${c.url}">${esc(c.name)}</a>` : ` &gt; <span>${esc(c.name)}</span>`).join('')}</div>` : ''}
@@ -241,7 +243,7 @@ ${hasPrice ? `<td class="price">${p.price ? yen(p.price) : '—'}</td>` : ''}
       { name: 'ランプが点滅したら', test: p => p.life && p.life.unit === 'lamp', note: '本体の交換ランプで知らせてくれます。' },
     ];
     if (ps.some(p => p.life)) freqHtml = `<h2 class="h2">交換の頻度で分けると</h2>
-<p>${m.id} の消耗品を、取扱説明書の交換めやすで並べ替えました。「フィルター交換」と言っても、毎月替えるものと10年もつものが混ざっています。</p>
+<p>${m.id} の消耗品を、メーカーが公表している交換めやすで並べ替えました。「フィルター交換」と言っても、毎月替えるものと10年もつものが混ざっています。</p>
 <table class="tbl freq"><thead><tr><th>頻度</th><th>部品</th><th>メモ</th></tr></thead><tbody>
 ${buckets.map(b => { const xs = ps.filter(b.test); return xs.length ? `<tr><th>${b.name}</th><td>${xs.map(p => `<a class="pn" href="${partUrl(p.id)}">${p.id}</a> <span class="sub">${esc(KINDS[p.kind].label)}</span>`).join('<br>')}</td><td class="sub">${esc(b.note)}</td></tr>` : ''; }).join('')}
 </tbody></table>`;
@@ -305,7 +307,7 @@ function partPage(ds, p) {
   const grouped = groupBySeries(ds, withPage.map(x => ({ id: x })));
   const noPage = p.models.filter(x => !ds.hasPage.has(x));
   const title = `${p.id} ${p.name}の適用機種一覧｜${maker.name} ${maker.category}`;
-  const desc = `${maker.name}の${p.name}（${p.id}）が使える${maker.category}の型番${p.models.length}機種の一覧。${p.price ? `${ds.priceLabel ? '希望小売価格' : '直販価格'}${yen(p.price)}、` : ''}交換のめやす、購入時の注意をまとめています。`;
+  const desc = `${maker.name}の${p.name}（${p.id}）が使える${maker.category}の型番${p.models.length}機種の一覧。${p.price ? `${ds.priceLabel || '直販価格'}${yen(p.price)}、` : ''}交換のめやす、購入時の注意をまとめています。`;
   const srcs = p.source ? [[p.source, `${maker.name} 公式 ${p.id}`]] : ds.sourceUrl ? [[ds.sourceUrl, ds.sourceName]] : withPage.map(x => ds.modelList.find(m => m.id === x)).filter(m => m && m.source).map(m => [m.source, `${m.id} 取扱説明書`]);
 
   const body = `
@@ -314,7 +316,7 @@ function partPage(ds, p) {
 <tr><th>部品番号</th><td><strong class="pn-big">${p.id}</strong>${p.replaces ? `<span class="sub">（旧番号 ${p.replaces.join('・')} はこの番号に統合）</span>` : ''}</td></tr>
 <tr><th>部品名</th><td>${esc(p.name)}${p.typeLabel ? `（${esc(p.typeLabel)}）` : ''}</td></tr>
 <tr><th>入数</th><td>${esc(p.packLabel || `${p.pack}個`)}</td></tr>
-${p.price ? `<tr><th>${ds.priceLabel ? 'メーカー希望小売価格' : 'メーカー直販価格'}</th><td class="price">${yen(p.price)}<span class="sub">（税込・${fmtDate(ds.checkedAt)}確認）</span></td></tr>` : ''}
+${p.price ? `<tr><th>${ds.priceLabel === '希望小売価格' ? 'メーカー希望小売価格' : ds.priceLabel || 'メーカー直販価格'}</th><td class="price">${yen(p.price)}<span class="sub">（税込・${fmtDate(ds.checkedAt)}確認）</span></td></tr>` : ''}
 <tr><th>交換のめやす</th><td>${esc(lifeLabel(p))}<br><span class="sub">${esc(p.lifeNote)}</span></td></tr>
 ${p.variants ? `<tr><th>入数違い</th><td>${esc(p.variants)}</td></tr>` : ''}
 <tr><th>適用機種数</th><td>${p.models.length}機種</td></tr>
@@ -386,7 +388,7 @@ function topPage() {
     <button type="submit">部品を調べる</button>
   </form>
   <ul class="suggest" data-suggest-list hidden></ul>
-  <p class="top-hint">型番は本体の側面か背面のシールに書いてあります。「HD-」「KI-」「FU-」「F-」を省いて入れても探せます。</p>
+  <p class="top-hint">型番は本体の側面か背面のシールに書いてあります。「HD-」「KI-」「FU-」「F-」を省いて入れても探せます。ダイキンは「MCK70Z」のように入力します。</p>
 </section>
 
 <h2 class="h2">収録しているメーカー</h2>
@@ -394,7 +396,7 @@ function topPage() {
 <thead><tr><th>メーカー</th><th>製品</th><th>収録機種</th><th>部品</th><th>確認日</th></tr></thead>
 <tbody>${datasets.map(d => `<tr><td><a href="${makerUrl(d)}">${esc(d.maker.nameFull)}</a></td><td>${esc(d.maker.category)}</td><td>${d.modelList.length}機種</td><td>${d.parts.length}点</td><td>${fmtDate(d.checkedAt)}</td></tr>`).join('')}</tbody>
 </table>
-<p class="sub">ダイキンの加湿空気清浄機、浄水器・掃除機の消耗品も順次追加します。</p>
+<p class="sub">浄水器・掃除機の消耗品も順次追加します。</p>
 
 ${datasets.map(ds => `<h2 class="h2">シリーズから探す（${esc(ds.maker.name)} ${esc(ds.maker.category)}）</h2>
 <table class="tbl series">
