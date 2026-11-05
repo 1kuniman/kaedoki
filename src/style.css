@@ -80,6 +80,11 @@ main{min-width:0}
 .jump{display:flex;flex-wrap:wrap;gap:4px 0;font-size:12px;margin:0 0 6px}
 .jump a{padding:2px 10px;border-right:1px solid var(--line)}
 .src{margin-top:24px;padding-top:8px;border-top:1px dotted var(--line);font-size:12px;color:var(--ink-3)}
+.answer{border:1px solid var(--line);border-left:4px solid #f0b400;background:#fffdf5;padding:10px 14px;margin:0 0 16px}
+.answer-h{font-weight:700;margin:0 0 6px}
+.answer ul{margin:0 0 6px;padding-left:1.2em}
+.answer li{margin-bottom:4px}
+.answer .sub{margin:0}
 
 .calc{border:1px solid var(--line);background:#fafbfc;padding:10px 12px;margin:12px 0}
 .calc-h{font-weight:700;margin:0 0 6px}
