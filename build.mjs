@@ -87,7 +87,6 @@ const partAmazonUrl = (makerName, p) => {
   if (cfg.amazonTag) u.searchParams.set('tag', cfg.amazonTag);
   return u.toString();
 };
-const amzLink = (ds, p, text) => `<a href="${esc(partAmazonUrl(ds.maker.name, p))}" rel="sponsored nofollow noopener" target="_blank">${text}</a>`;
 const lifeMonths = l => !l ? 9999 : l.unit === 'month' ? l.value : l.unit === 'season' ? l.value * 6 : l.unit === 'year' ? l.value * 12 : 5000;
 
 function write(rel, html) {
@@ -205,7 +204,7 @@ function modelPage(ds, m) {
   const partRows = ps.map(p => `<tr><th>${esc(p.kind === 'vapor' ? `気化フィルター（${p.type === 'care' ? 'お手入れ' : '使い捨て'}）` : KINDS[p.kind].label)}</th>
 <td><a class="pn" href="${partUrl(p.id)}">${p.id}</a> ${typeBadge(p)}<br><span class="sub">${esc(p.name)}${p.packLabel ? (p.name.includes(p.packLabel) ? '' : `（${esc(p.packLabel)}）`) : p.pack > 1 && !/\d(個|枚)入/.test(p.name) ? `（${p.pack}個入り）` : ''}・${esc(lifeLabel(p))}${p.typeLabel && !['vapor', 'agatt', 'bio'].includes(p.kind) ? `<br>${esc(p.typeLabel)}` : ''}${p.stockNote ? `<br><strong>${esc(p.stockNote)}</strong>` : ''}</span></td>
 ${hasPrice ? `<td class="price">${p.price ? yen(p.price) : '—'}</td>` : ''}
-<td class="act">${amzLink(ds, p, 'Amazon')}${p.source ? ` / <a href="${esc(p.source)}" rel="noopener" target="_blank">直販</a>` : ''}</td></tr>`).join('\n');
+<td class="act"><a class="btn-amz btn-s" href="${esc(partAmazonUrl(ds.maker.name, p))}" rel="sponsored nofollow noopener" target="_blank">Amazonで見る</a>${p.source ? `<a class="btn-off btn-s" href="${esc(p.source)}" rel="noopener" target="_blank">メーカー直販</a>` : ''}</td></tr>`).join('\n');
 
   // ダイニチ：お手入れ／使い捨ての費用比較
   let costHtml = '';
