@@ -253,17 +253,30 @@ ${buckets.map(b => { const xs = ps.filter(b.test); return xs.length ? `<tr><th>$
   }
 
   const siblings = primary ? primary.models.filter(x => x !== m.id && ds.hasPage.has(x)) : [];
-  const title = ds.modelTitle ? ds.modelTitle.replace(/\{id\}/g, m.id) : `${m.id} の交換フィルター・部品番号｜${maker.name} ${maker.category}`;
-  const keyIds = ps.filter(p => (ds.primaryKinds || []).includes(p.kind) || p.kind === 'air').map(p => p.id);
-  const desc = `${maker.name}の${maker.category} ${m.id} に合う交換フィルターの部品番号は${keyIds.join('・')}。${hasPrice ? 'メーカー直販価格、' : ''}交換のめやすをメーカー資料からまとめています。`;
+  const title = ds.modelTitle ? ds.modelTitle.replace(/\{id\}/g, m.id) : `${m.id} のフィルター交換｜部品番号・${hasPrice ? '価格・' : ''}交換時期（${maker.name} ${maker.category}）`;
+  const keyIds = ps.filter(p => ((ds.primaryKinds || []).includes(p.kind) || p.kind === 'air') && p.kind !== 'battery').map(p => p.id);
+  const batIds = ps.filter(p => p.kind === 'battery').map(p => p.id);
+  const desc = `${maker.name} ${m.id}（${maker.category}）の${keyIds.length ? `フィルター交換に使う純正部品の部品番号は${keyIds.join('・')}${batIds.length ? `、交換バッテリーは${batIds.join('・')}` : ''}` : `交換バッテリーの部品番号は${batIds.join('・')}`}。${hasPrice ? `${priceLabel}と` : ''}交換のめやすをメーカー資料から確認できます。`;
+  // 冒頭の結論：汚れ・ニオイで替えるフィルターを、交換めやすの短い順に
+  const FIX = ['vapor', 'humid', 'humidpre', 'pre', 'ag', 'dust', 'deo', 'combo', 'set', 'pfilter', 'vfilter'];
+  const fixParts = ps.filter(p => FIX.includes(p.kind)).sort((a, b) => lifeMonths(a.life) - lifeMonths(b.life)).slice(0, 5);
+  const fixLabel = p => p.kind === 'vapor' ? `気化フィルター（${p.type === 'care' ? 'お手入れ' : '使い捨て'}）` : ['pfilter', 'vfilter'].includes(p.kind) && p.name !== KINDS[p.kind].label ? `${KINDS[p.kind].label}（${p.name}）` : KINDS[p.kind].label;
+  const vaporBoth = fixParts.some(p => p.kind === 'vapor' && p.type === 'care') && fixParts.some(p => p.kind === 'vapor' && p.type === 'disposable');
+  const allLong = fixParts.every(p => p.life && ['year', 'season', 'none'].includes(p.life.unit) && lifeMonths(p.life) >= 60);
+  const answerHtml = fixParts.length ? `<div class="answer">
+<p class="answer-h">フィルターが汚れた・臭うときに確認する部品</p>
+<ul>${fixParts.map(p => `<li>${esc(fixLabel(p))}：<a class="pn" href="${partUrl(p.id)}">${p.id}</a><span class="sub">（交換のめやす：${esc(lifeLabel(p))}）</span></li>`).join('')}</ul>
+${vaporBoth ? '<p>気化フィルターは「お手入れタイプ」か「使い捨てタイプ」の<strong>どちらか一方</strong>を使います。お手入れタイプの「最大5シーズン」は、月1回のクエン酸洗浄をした場合の目安です。</p>' : ''}${allLong ? '<p>この機種のフィルターは、どれも交換の間隔が長い（または交換不要の）部品です。汚れやニオイが気になるときは、買い替える前に取扱説明書のお手入れ方法を確認してください。</p>' : ''}
+<p class="sub">交換のめやすの短い順。めやすはメーカー公表の値です。価格と購入先は下の表にあります。</p>
+</div>` : '';
   const srcUrl = m.source || ds.sourceUrl || maker.officialShop;
   const srcName = ds.modelSourceLabel ? ds.modelSourceLabel.replace('{id}', m.id) : ds.modelSourceName ? ds.modelSourceName.replace('{id}', m.id) : m.source ? `${maker.name} ${m.id} 取扱説明書（PDF）` : ds.sourceName || `${maker.name} 公式 別売部品ページ`;
   const srcKind = (ds.modelSourceName || ds.modelSourceLabel) ? ds.sourceKind : m.source ? '取扱説明書' : ds.sourceKind || 'メーカー直販サイト';
 
   const body = `
-<h1 class="h1">${ds.modelTitle ? `${esc(maker.name)} ${m.id} の交換部品` : `${m.id} の交換フィルター・部品`}</h1>
+<h1 class="h1">${ds.modelTitle ? `${esc(maker.name)} ${m.id} の交換部品` : `${m.id} のフィルター交換｜部品番号と交換時期`}</h1>
 <p class="lead">${esc(maker.nameFull)}の${esc(maker.category)}「${m.id}」に適合する純正の交換部品です。${srcKind}の記載（${fmtDate(ds.checkedAt)}確認）にもとづいています。</p>
-
+${answerHtml}
 <table class="tbl spec"><tbody>
 <tr><th>メーカー</th><td>${esc(maker.nameFull)}</td></tr>
 <tr><th>製品</th><td>${esc(maker.category)}</td></tr>
