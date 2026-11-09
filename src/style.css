@@ -51,7 +51,9 @@ p{margin:0 0 10px}
 .tbl thead th{background:var(--th);font-weight:700;white-space:nowrap}
 .tbl tbody th{background:#f8f9fa;font-weight:400;width:9em;white-space:nowrap}
 .tbl.spec tbody th{width:10em}
-.tbl.parts td.act{white-space:nowrap;font-size:12px}
+.tbl.parts td.act{white-space:nowrap;font-size:13px}
+.tbl.parts td.act .btn-s{display:block;padding:8px 12px;text-align:center;font-size:13px;min-height:40px;box-sizing:border-box;line-height:22px}
+.tbl.parts td.act .btn-s+.btn-s{margin-top:6px}
 .tbl.cmp td.price{text-align:right}
 main{min-width:0}
 .price{color:var(--price);font-weight:700;white-space:nowrap}
@@ -144,6 +146,9 @@ main{min-width:0}
   .tbl.parts tr{display:block;border:1px solid var(--line);margin-bottom:8px}
   .tbl.parts td,.tbl.parts th{display:block;border:0;border-bottom:1px solid var(--line-2);width:auto}
   .tbl.parts td:last-child{border-bottom:0}
+  .tbl.parts td.act{display:flex;gap:8px}
+  .tbl.parts td.act .btn-s{flex:1;min-height:44px;line-height:26px}
+  .tbl.parts td.act .btn-s+.btn-s{margin-top:0}
   .h1{font-size:18px}
   .top-h{font-size:16px}
   .big-search input{font-size:16px}
