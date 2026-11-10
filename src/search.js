@@ -15,7 +15,7 @@
   function find(q, list) {
     var b = bare(q);
     if (!b) return { exact: null, hits: [] };
-    var PFX = /^(HD|KI|KC|FU|FP|F)/;
+    var PFX = /^(HD|KI|KC|FU|FP|FE|F)/;
     var b2 = b.replace(PFX, '');
     var exact = null, loose = [], starts = [], contains = [];
     list.forEach(function (it) {
