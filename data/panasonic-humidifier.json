@@ -1,0 +1,641 @@
+{
+ "maker": {
+  "id": "panasonic-humidifier",
+  "name": "パナソニック",
+  "navName": "パナソニック加湿機",
+  "nameFull": "パナソニック",
+  "category": "加湿機",
+  "modelLabelHint": "品番は本体の側面または背面のラベルに書かれています。「FE-」から始まる英数字です（一部の機種は「F-」から始まります）。",
+  "modelNote": "品番の末尾の「-W」「-T」などは本体色を表す記号です。検索するときは省いて入力してください。",
+  "partsPolicy": "交換のめやすは、1日8時間運転した場合の目安です。クリーニングフィルターは、販売店や修理窓口から取り寄せる「サービスルート扱い」の部品です。",
+  "partialNote": "このページの部品と価格は、パナソニック公式資料「加湿機をかしこく使うためのオプション（別売品）」に載っているものです。資料にない旧機種は、取扱説明書で確認してください。",
+  "officialShop": "https://ec-plus.panasonic.jp/",
+  "genuineNote": "互換品はサイズや性能がメーカーの想定と異なる場合があります。純正品は品番が商品名に入っているので、品番で照合してください。"
+ },
+ "checkedAt": "2026-11-10",
+ "sourceUrl": "https://panasonic.jp/content/dam/panasonic/jp/ja/kashitsu/contents/pdf/250801/option.pdf",
+ "sourceName": "パナソニック 加湿機をかしこく使うためのオプション（別売品）（PDF）",
+ "sourceKind": "メーカー公式資料",
+ "priceLabel": "希望小売価格",
+ "primaryKinds": [
+  "humid",
+  "clean"
+ ],
+ "series": [
+  {
+   "re": "^FE-(KHA|0[345]K[HTJ]|04AHY)",
+   "key": "steam",
+   "name": "FE-05KHY・05KTSほか（クリーニングフィルターを使う機種）"
+  },
+  {
+   "re": "^FE-K[XF]",
+   "key": "kx",
+   "name": "FE-KX・FE-KF系"
+  },
+  {
+   "re": "^FE-K",
+   "key": "kl",
+   "name": "FE-KL・FE-KBL系"
+  },
+  {
+   "re": "^FE-\\d",
+   "key": "num",
+   "name": "FE-05KLY・07KLWほか（数字で始まる品番）"
+  },
+  {
+   "re": "^F-",
+   "key": "f",
+   "name": "F-VXJ35・F-VKK20ほか（「F-」で始まる品番）"
+  }
+ ],
+ "parts": [
+  {
+   "id": "FE-ZKE07",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 4950,
+   "life": {
+    "unit": "year",
+    "value": 10,
+    "label": "約10年（約120か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-KF07C",
+    "FE-KFK05",
+    "FE-KFK07",
+    "FE-KFL05",
+    "FE-KFL07",
+    "FE-KFM05",
+    "FE-KFM07",
+    "FE-KFP05",
+    "FE-KFP07",
+    "FE-KFR05",
+    "FE-KFR07",
+    "FE-KFS05",
+    "FE-KFS07",
+    "FE-KFT05",
+    "FE-KFT07",
+    "FE-KFU05",
+    "FE-KFU07",
+    "FE-KFW07",
+    "FE-KFY07",
+    "FE-KX05C",
+    "FE-KX07C",
+    "FE-KXK05",
+    "FE-KXK07",
+    "FE-KXL05",
+    "FE-KXL07",
+    "FE-KXM05",
+    "FE-KXM07",
+    "FE-KXP05",
+    "FE-KXP07",
+    "FE-KXR05",
+    "FE-KXR07",
+    "FE-KXS05",
+    "FE-KXS07",
+    "FE-KXT05",
+    "FE-KXT07",
+    "FE-KXU05",
+    "FE-KXU07",
+    "FE-KXW05",
+    "FE-KXW07",
+    "FE-KXY05",
+    "FE-KXY07"
+   ]
+  },
+  {
+   "id": "FE-ZGE07",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 5170,
+   "life": {
+    "unit": "year",
+    "value": 10,
+    "label": "約10年（約120か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-KFG07",
+    "FE-KFH07",
+    "FE-KFJ07",
+    "FE-KXG07",
+    "FE-KXH07",
+    "FE-KXJ07"
+   ]
+  },
+  {
+   "id": "FE-ZGE05",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 4950,
+   "life": {
+    "unit": "year",
+    "value": 10,
+    "label": "約10年（約120か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-KFG05",
+    "FE-KFH05",
+    "FE-KFJ05",
+    "FE-KXG05",
+    "FE-KXH05",
+    "FE-KXJ05"
+   ]
+  },
+  {
+   "id": "FE-ZHE03",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 3850,
+   "life": {
+    "unit": "year",
+    "value": 10,
+    "label": "約10年（約120か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-KFH03",
+    "FE-KFJ03",
+    "FE-KFK03",
+    "FE-KFL03",
+    "FE-KFM03",
+    "FE-KFP03",
+    "FE-KFR03",
+    "FE-KFS03",
+    "FE-KFT03",
+    "FE-KFU03"
+   ]
+  },
+  {
+   "id": "FE-ZDE05",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 5170,
+   "life": {
+    "unit": "year",
+    "value": 10,
+    "label": "約10年（約120か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "F-VXD40",
+    "F-VXD50",
+    "F-VXE40",
+    "F-VXF35",
+    "F-VXG35",
+    "F-VXGB35",
+    "F-VXH35",
+    "F-VXH35B2",
+    "F-VXJ35",
+    "FE-5KLE5",
+    "FE-5KLE6",
+    "FE-7KLE5",
+    "FE-7KLE6",
+    "FE-KLD05",
+    "FE-KLD07",
+    "FE-KLE05",
+    "FE-KLE07",
+    "FE-KLF05",
+    "FE-KLF07",
+    "FE-KXD05",
+    "FE-KXD07",
+    "FE-KXE05",
+    "FE-KXE07",
+    "FE-KXF05",
+    "FE-KXF07"
+   ]
+  },
+  {
+   "id": "FE-ZDE03",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 4620,
+   "life": {
+    "unit": "year",
+    "value": 10,
+    "label": "約10年（約120か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-KLD03",
+    "FE-KLE03",
+    "FE-KLF03",
+    "FE-KLG03"
+   ]
+  },
+  {
+   "id": "FE-ZPE23",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 2,
+   "packLabel": "2枚入り・1枠分",
+   "typeLabel": "この機種は1台に2枠・4枚使います",
+   "price": 8250,
+   "life": {
+    "unit": "year",
+    "value": 10,
+    "label": "約10年（約120か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-KXP20",
+    "FE-KXP23"
+   ]
+  },
+  {
+   "id": "FE-ZEE10",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 8910,
+   "life": {
+    "unit": "year",
+    "value": 10,
+    "label": "約10年（約120か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-KFE10",
+    "FE-KFE15",
+    "FE-KXF15"
+   ]
+  },
+  {
+   "id": "FE-ZBH07",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 2750,
+   "life": {
+    "unit": "season",
+    "value": 4,
+    "label": "約4シーズン（約24か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-7KLE3",
+    "FE-7KLE4",
+    "FE-KLB07",
+    "FE-KLC07",
+    "FE-KXC07"
+   ]
+  },
+  {
+   "id": "FE-ZBH05",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 2420,
+   "life": {
+    "unit": "season",
+    "value": 4,
+    "label": "約4シーズン（約24か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-5KLE3",
+    "FE-5KLE4",
+    "FE-KBLB05",
+    "FE-KBLC05",
+    "FE-KLB05",
+    "FE-KLC05",
+    "FE-KXB05",
+    "FE-KXC05"
+   ]
+  },
+  {
+   "id": "FE-ZBE07",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 2750,
+   "life": {
+    "unit": "season",
+    "value": 4,
+    "label": "約4シーズン（約24か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-05KFZ",
+    "FE-7KLE2",
+    "FE-7KLV7",
+    "FE-07KLZ",
+    "FE-KFA05",
+    "FE-KFB05",
+    "FE-KLA07"
+   ]
+  },
+  {
+   "id": "FE-ZBE05",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 2420,
+   "life": {
+    "unit": "season",
+    "value": 4,
+    "label": "約4シーズン（約24か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "F-VDC30",
+    "F-VX30E4",
+    "F-VXB30",
+    "F-VXC30",
+    "FE-05KBLZ",
+    "FE-5KLE2",
+    "FE-5KLV7",
+    "FE-05KLZ",
+    "FE-KBLA05",
+    "FE-KLA05"
+   ]
+  },
+  {
+   "id": "FE-ZBE03",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 2200,
+   "life": {
+    "unit": "season",
+    "value": 4,
+    "label": "約4シーズン（約24か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-03KLZ",
+    "FE-03TLA",
+    "FE-03TLB",
+    "FE-03TLD",
+    "FE-KLA03",
+    "FE-KLB03",
+    "FE-KLC03"
+   ]
+  },
+  {
+   "id": "FE-Z05EWK",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 3168,
+   "life": {
+    "unit": "season",
+    "value": 1,
+    "label": "約1シーズン（約6か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。1シーズンは約6か月です。",
+   "models": [
+    "FE-05KBLW",
+    "FE-05KBLY",
+    "FE-05KLW",
+    "FE-5KLXV6",
+    "FE-05KLY"
+   ]
+  },
+  {
+   "id": "FE-Z03EWK",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 3058,
+   "life": {
+    "unit": "season",
+    "value": 1,
+    "label": "約1シーズン（約6か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。1シーズンは約6か月です。",
+   "models": [
+    "FE-03KLW",
+    "FE-03KLY"
+   ]
+  },
+  {
+   "id": "FE-Z07EVK",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 3278,
+   "life": {
+    "unit": "season",
+    "value": 1,
+    "label": "約1シーズン（約6か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。1シーズンは約6か月です。",
+   "models": [
+    "FE-07KLV",
+    "FE-07KLW",
+    "FE-07KLY"
+   ]
+  },
+  {
+   "id": "FE-Z05EUK",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 3058,
+   "life": {
+    "unit": "season",
+    "value": 1,
+    "label": "約1シーズン（約6か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。1シーズンは約6か月です。",
+   "models": [
+    "FE-05KBLV",
+    "FE-05KLU",
+    "FE-05KLV"
+   ]
+  },
+  {
+   "id": "FE-Z06ETK",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 3498,
+   "life": {
+    "unit": "season",
+    "value": 1,
+    "label": "約1シーズン（約6か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。1シーズンは約6か月です。",
+   "models": [
+    "FE-06KLT",
+    "FE-07KKLV",
+    "FE-07KLU"
+   ]
+  },
+  {
+   "id": "FE-Z07ESK",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "typeLabel": "FE-14KFWP・14KFW・14KFSは1台に2個使います",
+   "price": 4708,
+   "life": {
+    "unit": "season",
+    "value": 1,
+    "label": "約1シーズン（約6か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。1シーズンは約6か月です。",
+   "models": [
+    "FE-07KFS",
+    "FE-07KFW",
+    "FE-14KFS",
+    "FE-14KFW",
+    "FE-14KFWP"
+   ]
+  },
+  {
+   "id": "FE-ZHG10",
+   "name": "交換用加湿フィルター",
+   "kind": "humid",
+   "pack": 1,
+   "price": 3850,
+   "life": {
+    "unit": "year",
+    "value": 10,
+    "label": "約10年（約120か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "F-GMHK10",
+    "F-VKJ20",
+    "F-VKK20"
+   ]
+  },
+  {
+   "id": "FKA0330076",
+   "name": "交換用クリーニングフィルター",
+   "kind": "clean",
+   "pack": 2,
+   "packLabel": "2枚入り",
+   "stockNote": "サービスルート扱いのみ（販売店・修理窓口で注文）",
+   "price": 1210,
+   "life": {
+    "unit": "season",
+    "value": 1,
+    "label": "約1シーズン（約6か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-04AHY",
+    "FE-04KHS",
+    "FE-04KHT",
+    "FE-04KHU",
+    "FE-04KHV",
+    "FE-04KTP",
+    "FE-04KTR",
+    "FE-04KTT",
+    "FE-05KHS",
+    "FE-05KHT",
+    "FE-05KHY",
+    "FE-05KJT",
+    "FE-05KTP",
+    "FE-05KTR",
+    "FE-05KTS",
+    "FE-KHA05"
+   ]
+  },
+  {
+   "id": "FKA0330104",
+   "name": "交換用クリーニングフィルター",
+   "kind": "clean",
+   "pack": 1,
+   "stockNote": "サービスルート扱いのみ（販売店・修理窓口で注文）",
+   "price": 660,
+   "life": {
+    "unit": "season",
+    "value": 1,
+    "label": "約1シーズン（約6か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-04AHY",
+    "FE-04KHS",
+    "FE-04KHT",
+    "FE-04KHU",
+    "FE-04KHV",
+    "FE-04KTP",
+    "FE-04KTR",
+    "FE-04KTT",
+    "FE-05KHS",
+    "FE-05KHT",
+    "FE-05KHY",
+    "FE-05KJT",
+    "FE-05KTP",
+    "FE-05KTR",
+    "FE-05KTS",
+    "FE-KHA05"
+   ]
+  },
+  {
+   "id": "FKA0330075",
+   "name": "交換用クリーニングフィルター",
+   "kind": "clean",
+   "pack": 2,
+   "packLabel": "2枚入り",
+   "stockNote": "サービスルート扱いのみ（販売店・修理窓口で注文）",
+   "price": 1210,
+   "life": {
+    "unit": "season",
+    "value": 1,
+    "label": "約1シーズン（約6か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-03KHS",
+    "FE-03KHT",
+    "FE-03KHU",
+    "FE-03KTP",
+    "FE-03KTR",
+    "FE-03KTS"
+   ]
+  },
+  {
+   "id": "FKA0330103",
+   "name": "交換用クリーニングフィルター",
+   "kind": "clean",
+   "pack": 1,
+   "stockNote": "サービスルート扱いのみ（販売店・修理窓口で注文）",
+   "price": 660,
+   "life": {
+    "unit": "season",
+    "value": 1,
+    "label": "約1シーズン（約6か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-03KHS",
+    "FE-03KHT",
+    "FE-03KHU",
+    "FE-03KTP",
+    "FE-03KTR",
+    "FE-03KTS"
+   ]
+  },
+  {
+   "id": "FE-ZPM07",
+   "name": "交換用除菌剤",
+   "kind": "jokinzai",
+   "pack": 1,
+   "price": 1650,
+   "life": {
+    "unit": "season",
+    "value": 2,
+    "label": "約2シーズン（約12か月）"
+   },
+   "lifeNote": "1日8時間運転した場合の目安（パナソニック公式資料の記載）。",
+   "models": [
+    "FE-KXP20",
+    "FE-KXP23"
+   ]
+  }
+ ]
+}

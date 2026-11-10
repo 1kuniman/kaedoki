@@ -31,6 +31,8 @@ const KINDS = {
   battery:  { label: 'バッテリー', cls: 'b-air', order: 1 },
   bio:      { label: 'バイオ抗体／チタンアパタイト', cls: 'b-air', order: 5 },
   streamer: { label: 'ストリーマユニット', cls: 'b-air', order: 6 },
+  clean:    { label: 'クリーニングフィルター', cls: 'b-care', order: 1 },
+  jokinzai: { label: '除菌剤', cls: 'b-air', order: 5 },
 };
 
 // ---------- データ読み込み ----------
@@ -156,7 +158,7 @@ ${ld}
     </form>
   </div>
   <nav class="gnav"><div class="wrap">
-    ${datasets.map(d => `<a href="${makerUrl(d)}">${esc(d.maker.name)}</a>`).join('')}<a href="/parts/">部品番号一覧</a><a href="/guide/dainichi-filter-life/">ダイニチ交換時期</a><a href="/guide/sharp-filter-schedule/">シャープ交換時期</a><a href="/guide/dainichi-filter-cost/">費用比較</a>
+    ${datasets.map(d => `<a href="${makerUrl(d)}">${esc(d.maker.navName || d.maker.name)}</a>`).join('')}<a href="/parts/">部品番号一覧</a><a href="/guide/dainichi-filter-life/">ダイニチ交換時期</a><a href="/guide/sharp-filter-schedule/">シャープ交換時期</a><a href="/guide/dainichi-filter-cost/">費用比較</a>
   </div></nav>
 </header>
 ${crumbs.length ? `<div class="wrap crumbs"><a href="/">トップ</a>${crumbs.map(c => c.url ? ` &gt; <a href="${c.url}">${esc(c.name)}</a>` : ` &gt; <span>${esc(c.name)}</span>`).join('')}</div>` : ''}
