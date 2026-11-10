@@ -365,6 +365,7 @@ function makerPage(ds) {
   const body = `
 <h1 class="h1">${esc(maker.name)} ${esc(maker.category)}の交換フィルター 機種別一覧</h1>
 <p class="lead">${ds.modelList.length}機種を収録。形名を選ぶと、その機種に合う交換部品の部品番号と交換のめやすが表示されます。</p>
+${datasets.filter(d => d !== ds && d.maker.name === maker.name).map(d => `<p class="sub">${esc(maker.name)}の${esc(d.maker.category)}（${d.modelList.length}機種）は → <a href="${makerUrl(d)}">${esc(maker.name)} ${esc(d.maker.category)}の交換フィルター一覧</a></p>`).join('')}
 <div class="jump">${groups.map(g => `<a href="#s-${g.key}">${esc(g.name)}</a>`).join('')}</div>
 ${groups.map(g => `<h2 class="h2" id="s-${g.key}">${esc(g.name)}<span class="h2-n">${g.models.length}機種</span></h2>
 <p class="sub">主なフィルター：${primaryOf(g).slice(0, 6).map(id => `<a href="${partUrl(id)}">${id}</a>（${esc(shortType(ds.partById[id]))}）`).join('、')}${more(primaryOf(g), 6)}</p>
