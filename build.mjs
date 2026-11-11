@@ -33,6 +33,7 @@ const KINDS = {
   streamer: { label: 'ストリーマユニット', cls: 'b-air', order: 6 },
   clean:    { label: 'クリーニングフィルター', cls: 'b-care', order: 1 },
   jokinzai: { label: '除菌剤', cls: 'b-air', order: 5 },
+  cartridge: { label: '浄水カートリッジ', cls: 'b-care', order: 1 },
 };
 
 // ---------- データ読み込み ----------
@@ -257,7 +258,7 @@ ${buckets.map(b => { const xs = ps.filter(b.test); return xs.length ? `<tr><th>$
   const title = ds.modelTitle ? ds.modelTitle.replace(/\{id\}/g, m.id) : `${m.id} のフィルター交換｜部品番号・${hasPrice ? '価格・' : ''}交換時期（${maker.name} ${maker.category}）`;
   const keyIds = ps.filter(p => ((ds.primaryKinds || []).includes(p.kind) || p.kind === 'air') && p.kind !== 'battery').map(p => p.id);
   const batIds = ps.filter(p => p.kind === 'battery').map(p => p.id);
-  const desc = `${maker.name} ${m.id}（${maker.category}）の${keyIds.length ? `フィルター交換に使う純正部品の部品番号は${keyIds.join('・')}${batIds.length ? `、交換バッテリーは${batIds.join('・')}` : ''}` : `交換バッテリーの部品番号は${batIds.join('・')}`}。${hasPrice ? `${priceLabel}と` : ''}交換のめやすをメーカー資料から確認できます。`;
+  const desc = `${maker.name} ${m.id}（${maker.category}）の${keyIds.length ? `${ds.partWord || 'フィルター'}交換に使う純正部品の部品番号は${keyIds.join('・')}${batIds.length ? `、交換バッテリーは${batIds.join('・')}` : ''}` : `交換バッテリーの部品番号は${batIds.join('・')}`}。${hasPrice ? `${priceLabel}と` : ''}交換のめやすをメーカー資料から確認できます。`;
   // 冒頭の結論：汚れ・ニオイで替えるフィルターを、交換めやすの短い順に
   const FIX = ['vapor', 'humid', 'humidpre', 'pre', 'ag', 'dust', 'deo', 'combo', 'set', 'pfilter', 'vfilter'];
   const fixParts = ps.filter(p => FIX.includes(p.kind)).sort((a, b) => lifeMonths(a.life) - lifeMonths(b.life)).slice(0, 5);
@@ -359,11 +360,12 @@ ${noPage.length ? `<h3 class="h3">その他の適用機種</h3><ul class="model-
 // ---------- メーカーページ ----------
 function makerPage(ds) {
   const maker = ds.maker;
+  const pw = ds.partWord || 'フィルター';
   const topIds = mainParts(ds, ds.modelList);
   const groups = groupBySeries(ds, ds.modelList);
   const primaryOf = g => mainParts(ds, g.models);
   const body = `
-<h1 class="h1">${esc(maker.name)} ${esc(maker.category)}の交換フィルター 機種別一覧</h1>
+<h1 class="h1">${esc(maker.name)} ${esc(maker.category)}の交換${pw} 機種別一覧</h1>
 <p class="lead">${ds.modelList.length}機種を収録。形名を選ぶと、その機種に合う交換部品の部品番号と交換のめやすが表示されます。</p>
 ${datasets.filter(d => d !== ds && d.maker.name === maker.name).map(d => `<p class="sub">${esc(maker.name)}の${esc(d.maker.category)}（${d.modelList.length}機種）は → <a href="${makerUrl(d)}">${esc(maker.name)} ${esc(d.maker.category)}の交換フィルター一覧</a></p>`).join('')}
 <div class="jump">${groups.map(g => `<a href="#s-${g.key}">${esc(g.name)}</a>`).join('')}</div>
@@ -372,8 +374,8 @@ ${groups.map(g => `<h2 class="h2" id="s-${g.key}">${esc(g.name)}<span class="h2-
 <ul class="model-grid">${g.models.map(m => `<li><a href="${modelUrl(ds, m.id)}">${m.id}</a></li>`).join('')}</ul>`).join('')}
 <p class="src">出典：<a href="${esc(ds.sourceUrl || maker.officialShop)}" rel="noopener" target="_blank">${esc(ds.sourceName || `${maker.name} 公式サポート`)}</a>${ds.modelSources ? '・各機種の取扱説明書' : ''}（${fmtDate(ds.checkedAt)}確認）。ここにない形名は、まだ収録していないか、メーカーの部品供給が終わっている可能性があります。</p>`;
   return layout({
-    title: `${maker.name} ${maker.category}の交換フィルター・部品 型番別一覧｜${topIds.slice(0, 2).join('・')}など${ds.modelList.length}機種`,
-    desc: `${maker.name}の${maker.category}の交換フィルター・部品を型番から探せます。${topIds.slice(0, 3).join('・')}など、${ds.modelList.length}機種それぞれに合う純正部品の部品番号と価格をメーカー公式の情報から一覧にしています。`,
+    title: `${maker.name} ${maker.category}の交換${pw}・部品 型番別一覧｜${topIds.slice(0, 2).join('・')}など${ds.modelList.length}機種`,
+    desc: `${maker.name}の${maker.category}の交換${pw}・部品を型番から探せます。${topIds.slice(0, 3).join('・')}など、${ds.modelList.length}機種それぞれに合う純正部品の部品番号と価格をメーカー公式の情報から一覧にしています。`,
     canonical: makerUrl(ds), ds, crumbs: [{ name: `${maker.name} ${maker.category}` }], body,
   });
 }
