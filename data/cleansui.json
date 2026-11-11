@@ -1,0 +1,489 @@
+{
+ "maker": {
+  "id": "cleansui",
+  "name": "クリンスイ",
+  "nameFull": "三菱ケミカル・クリンスイ",
+  "category": "浄水器",
+  "modelLabelHint": "品番は本体の側面・底面、または取扱説明書の表紙に書かれています。「CSP」「MD」「CB」「CP」などから始まる英数字です。",
+  "modelNote": "品番の末尾の「-WT」「-GR」などは本体色を表す記号です。検索するときは省いて入力してください。",
+  "partsPolicy": "公式の交換ガイドには「同じシリーズなら、どの交換用浄水カートリッジでもご利用いただけます」（蛇口直結型）と書かれています。生産終了した本体も、ガイドに載っているものは現行のカートリッジが使えます。",
+  "partialNote": "このページは、公式「浄水カートリッジ交換ガイド」と公式オンラインストアの内容です。ビルトイン型（アンダーシンク・スパウトイン・カウンターオン）と業務用はまだ載せていません。",
+  "officialShop": "https://shop.cleansui.com/",
+  "genuineNote": "Amazonには互換カートリッジも多く出品されています。純正品は商品名に品番（例：HGC9SW）と「クリンスイ」が入っています。品番で照合してください。"
+ },
+ "checkedAt": "2026-11-12",
+ "sourceUrl": "https://cleansui.com/cartridge-guide",
+ "sourceName": "クリンスイ 浄水カートリッジ交換ガイド",
+ "sourceKind": "メーカー公式サイト",
+ "priceLabel": "公式ストア価格",
+ "partWord": "カートリッジ",
+ "modelTitle": "{id} のカートリッジ交換｜交換用カートリッジの品番・価格・交換時期（クリンスイ 浄水器）",
+ "primaryKinds": [
+  "cartridge"
+ ],
+ "series": [
+  {
+   "re": "^(CP[0245]\\d\\d|GP|JP|CSP4$)",
+   "key": "pot",
+   "name": "ポット型（CP508・CP012ほか）"
+  },
+  {
+   "re": "^(CSP|CP601)",
+   "key": "csp",
+   "name": "蛇口直結型 CSPシリーズ"
+  },
+  {
+   "re": "^MD",
+   "key": "mono",
+   "name": "蛇口直結型 MONOシリーズ"
+  },
+  {
+   "re": "^CB",
+   "key": "cb",
+   "name": "蛇口直結型 CBシリーズ"
+  },
+  {
+   "re": "^CG",
+   "key": "cg",
+   "name": "蛇口直結型 CGシリーズ"
+  },
+  {
+   "re": "^P[APSTXZ]\\d",
+   "key": "pixie",
+   "name": "ピクシーシリーズ"
+  },
+  {
+   "re": "^(CT|FT|GX|FX|BX|CX|LX|L)\\d",
+   "key": "demi",
+   "name": "デミシリーズ"
+  },
+  {
+   "re": "^(SY|SD|SK|SM|WS)",
+   "key": "shower",
+   "name": "浄水シャワー"
+  },
+  {
+   "re": "^(EM|SSX|STX)",
+   "key": "stand",
+   "name": "据置型（エミネント・Super STX）"
+  }
+ ],
+ "parts": [
+  {
+   "id": "CPC5W",
+   "name": "ポット型 交換用浄水カートリッジ",
+   "kind": "cartridge",
+   "pack": 2,
+   "packLabel": "2個入り",
+   "price": 6160,
+   "life": {
+    "unit": "month",
+    "value": 3,
+    "label": "約3か月"
+   },
+   "lifeNote": "公式オンラインストアの商品ページの記載。使用量や水質によって変わります。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/CPC5W-NW.html",
+   "models": [
+    "CP002",
+    "CP005",
+    "CP006",
+    "CP007",
+    "CP012",
+    "CP013",
+    "CP015",
+    "CP025",
+    "CP205",
+    "CP207",
+    "CP405",
+    "CP407",
+    "CP503",
+    "CP504",
+    "CP508",
+    "CSP4",
+    "GP001JP",
+    "JP100-C",
+    "JP101-C",
+    "JP407-D",
+    "JP407-R",
+    "JP407-T"
+   ]
+  },
+  {
+   "id": "CPC7W",
+   "name": "ポット型 アルカリポット用 交換カートリッジ",
+   "kind": "cartridge",
+   "pack": 2,
+   "packLabel": "2個入り",
+   "price": 8580,
+   "life": null,
+   "lifeNote": "公式ストアの商品ページに交換目安の記載がありません。本体の取扱説明書で確認してください。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/CPC7W-NW.html",
+   "models": [
+    "CP002",
+    "CP005",
+    "CP006",
+    "CP007",
+    "CP012",
+    "CP013",
+    "CP015",
+    "CP025",
+    "CP205",
+    "CP207",
+    "CP405",
+    "CP407",
+    "CP503",
+    "CP504",
+    "CP508",
+    "CSP4",
+    "GP001JP",
+    "JP100-C",
+    "JP101-C",
+    "JP407-D",
+    "JP407-R",
+    "JP407-T"
+   ]
+  },
+  {
+   "id": "HGC9S",
+   "name": "CSPシリーズ 交換用浄水カートリッジ",
+   "kind": "cartridge",
+   "pack": 1,
+   "price": 5500,
+   "life": {
+    "unit": "month",
+    "value": 3,
+    "label": "約3か月"
+   },
+   "lifeNote": "公式オンラインストアの商品ページの記載。使用量や水質によって変わります。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/HGC9S.html",
+   "models": [
+    "CP601",
+    "CSP1",
+    "CSP2",
+    "CSP3",
+    "CSP9",
+    "CSP501",
+    "CSP601",
+    "CSP602",
+    "CSP701",
+    "CSP801",
+    "CSP801i",
+    "CSP811",
+    "CSP901",
+    "CSPUD",
+    "CSPX"
+   ]
+  },
+  {
+   "id": "HGC9SW",
+   "name": "CSPシリーズ 交換用浄水カートリッジ",
+   "kind": "cartridge",
+   "pack": 2,
+   "packLabel": "2個入り",
+   "price": 10340,
+   "life": {
+    "unit": "month",
+    "value": 3,
+    "label": "約3か月"
+   },
+   "lifeNote": "公式オンラインストアの商品ページの記載。使用量や水質によって変わります。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/HGC9SW.html",
+   "models": [
+    "CP601",
+    "CSP1",
+    "CSP2",
+    "CSP3",
+    "CSP9",
+    "CSP501",
+    "CSP601",
+    "CSP602",
+    "CSP701",
+    "CSP801",
+    "CSP801i",
+    "CSP811",
+    "CSP901",
+    "CSPUD",
+    "CSPX"
+   ]
+  },
+  {
+   "id": "MDC01S",
+   "name": "MONOシリーズ 交換用浄水カートリッジ（除去物質17+3）",
+   "kind": "cartridge",
+   "pack": 1,
+   "price": 5500,
+   "life": {
+    "unit": "month",
+    "value": 3,
+    "label": "約3か月"
+   },
+   "lifeNote": "公式オンラインストアの商品ページの記載。使用量や水質によって変わります。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/MDC01S.html",
+   "models": [
+    "MD1",
+    "MD101",
+    "MD102",
+    "MD103",
+    "MD111",
+    "MD201",
+    "MD211",
+    "MD301",
+    "MD301i"
+   ]
+  },
+  {
+   "id": "MDC01SW",
+   "name": "MONOシリーズ 交換用浄水カートリッジ（除去物質17+3）",
+   "kind": "cartridge",
+   "pack": 2,
+   "packLabel": "2個入り",
+   "price": 10340,
+   "life": {
+    "unit": "month",
+    "value": 3,
+    "label": "約3か月"
+   },
+   "lifeNote": "公式オンラインストアの商品ページの記載。使用量や水質によって変わります。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/MDC01SW.html",
+   "models": [
+    "MD1",
+    "MD101",
+    "MD102",
+    "MD103",
+    "MD111",
+    "MD201",
+    "MD211",
+    "MD301",
+    "MD301i"
+   ]
+  },
+  {
+   "id": "MDC03SW",
+   "name": "MONOシリーズ 交換用浄水カートリッジ（除去物質11+3）",
+   "kind": "cartridge",
+   "pack": 2,
+   "packLabel": "2個入り",
+   "price": 7260,
+   "life": {
+    "unit": "month",
+    "value": 3,
+    "label": "約3か月"
+   },
+   "lifeNote": "公式オンラインストアの商品ページの記載。使用量や水質によって変わります。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/MDC03SW.html",
+   "models": [
+    "MD1",
+    "MD101",
+    "MD102",
+    "MD103",
+    "MD111",
+    "MD201",
+    "MD211",
+    "MD301",
+    "MD301i"
+   ]
+  },
+  {
+   "id": "CBC03W",
+   "name": "CBシリーズ 交換用浄水カートリッジ（3か月交換タイプ・ホワイト）",
+   "kind": "cartridge",
+   "pack": 2,
+   "packLabel": "2個入り",
+   "price": 7260,
+   "life": {
+    "unit": "month",
+    "value": 3,
+    "label": "約3か月"
+   },
+   "lifeNote": "公式オンラインストアの商品ページの記載。使用量や水質によって変わります。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/CBC03W.html",
+   "models": [
+    "CB013",
+    "CB023",
+    "CB026",
+    "CB073",
+    "CB073i",
+    "CB093",
+    "CB096"
+   ]
+  },
+  {
+   "id": "CBC06",
+   "name": "CBシリーズ 交換用浄水カートリッジ（6か月交換タイプ・グレー）",
+   "kind": "cartridge",
+   "pack": 1,
+   "life": {
+    "unit": "month",
+    "value": 6,
+    "label": "約6か月"
+   },
+   "lifeNote": "交換ガイドの「6ヶ月交換タイプ」の記載。価格は公式オンラインストアで確認できませんでした。",
+   "models": [
+    "CB013",
+    "CB023",
+    "CB026",
+    "CB073",
+    "CB073i",
+    "CB093",
+    "CB096"
+   ]
+  },
+  {
+   "id": "CGC4W",
+   "name": "CGシリーズ 交換用浄水カートリッジ",
+   "kind": "cartridge",
+   "pack": 2,
+   "packLabel": "2個入り",
+   "price": 5940,
+   "life": null,
+   "lifeNote": "公式ストアの商品ページに交換目安の記載がありません。本体の取扱説明書で確認してください。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/CGC4W.html",
+   "models": [
+    "CG104"
+   ]
+  },
+  {
+   "id": "PPC4440W",
+   "name": "ピクシーシリーズ 交換用浄水カートリッジ",
+   "kind": "cartridge",
+   "pack": 2,
+   "packLabel": "2個入り",
+   "price": 8360,
+   "life": {
+    "unit": "month",
+    "value": 3,
+    "label": "約3か月"
+   },
+   "lifeNote": "公式オンラインストアの商品ページの記載。使用量や水質によって変わります。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/PPC4440W.html",
+   "models": [
+    "PA901",
+    "PA902",
+    "PP945",
+    "PS956",
+    "PT923",
+    "PX912",
+    "PZ934"
+   ]
+  },
+  {
+   "id": "XTC2100W",
+   "name": "デミシリーズ 交換用浄水カートリッジ",
+   "kind": "cartridge",
+   "pack": 2,
+   "packLabel": "2個入り",
+   "price": 8360,
+   "life": {
+    "unit": "month",
+    "value": 3,
+    "label": "約3か月"
+   },
+   "lifeNote": "公式オンラインストアの商品ページの記載。使用量や水質によって変わります。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/XTC2100W.html",
+   "models": [
+    "BX762",
+    "CT753",
+    "CX751",
+    "FT774",
+    "FX773",
+    "GX784",
+    "L711",
+    "LX713"
+   ]
+  },
+  {
+   "id": "SYC202",
+   "name": "浄水シャワー 交換用カートリッジ",
+   "kind": "cartridge",
+   "pack": 1,
+   "price": 1980,
+   "life": null,
+   "lifeNote": "公式ストアの商品ページに交換目安の記載がありません。本体の取扱説明書で確認してください。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/SYC202.html",
+   "models": [
+    "SD104",
+    "SY101",
+    "SY102"
+   ]
+  },
+  {
+   "id": "SYC202W",
+   "name": "浄水シャワー 交換用カートリッジ",
+   "kind": "cartridge",
+   "pack": 2,
+   "packLabel": "2個入り",
+   "price": 3740,
+   "life": null,
+   "lifeNote": "公式ストアの商品ページに交換目安の記載がありません。本体の取扱説明書で確認してください。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/SYC202W.html",
+   "models": [
+    "SD104",
+    "SY101",
+    "SY102"
+   ]
+  },
+  {
+   "id": "SKC205W",
+   "name": "浄水シャワー 交換用カートリッジ",
+   "kind": "cartridge",
+   "pack": 2,
+   "packLabel": "2個入り",
+   "price": 3520,
+   "life": null,
+   "lifeNote": "公式ストアの商品ページに交換目安の記載がありません。本体の取扱説明書で確認してください。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/SKC205W.html",
+   "models": [
+    "SK105W",
+    "SK106W"
+   ]
+  },
+  {
+   "id": "SMC302",
+   "name": "浄水シャワーヘッド 交換用カートリッジ",
+   "kind": "cartridge",
+   "pack": 3,
+   "packLabel": "3個入り",
+   "price": 3960,
+   "life": null,
+   "lifeNote": "公式ストアの商品ページに交換目安の記載がありません。本体の取扱説明書で確認してください。",
+   "source": "https://shop.cleansui.com/%E6%B5%84%E6%B0%B4%E3%82%B7%E3%83%A3%E3%83%AF%E3%83%BC/%E6%B5%84%E6%B0%B4%E3%82%B7%E3%83%A3%E3%83%AF%E3%83%BC%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8/SMC302.html",
+   "models": [
+    "SM302",
+    "WS301"
+   ]
+  },
+  {
+   "id": "EMC0731A",
+   "name": "エミネント 交換用カートリッジ（Aカートリッジ＋Bカートリッジ）",
+   "kind": "cartridge",
+   "pack": 1,
+   "packLabel": "A・B各1個",
+   "price": 24200,
+   "life": {
+    "unit": "year",
+    "value": 1,
+    "label": "約1年"
+   },
+   "lifeNote": "公式オンラインストアの商品ページの記載。使用量や水質によって変わります。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/EMC0731A.html",
+   "models": [
+    "EM801",
+    "EM802"
+   ]
+  },
+  {
+   "id": "SSC8800",
+   "name": "Super STX 交換用カートリッジ",
+   "kind": "cartridge",
+   "pack": 1,
+   "price": 14960,
+   "life": null,
+   "lifeNote": "公式ストアの商品ページに交換目安の記載がありません。本体の取扱説明書で確認してください。",
+   "source": "https://shop.cleansui.com/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81/%E3%82%AB%E3%83%BC%E3%83%88%E3%83%AA%E3%83%83%E3%82%B8%E8%A3%BD%E5%93%81%E5%85%A8%E8%88%AC/SSC8800.html",
+   "models": [
+    "SSX880",
+    "STX810"
+   ]
+  }
+ ]
+}
