@@ -161,3 +161,18 @@ main{min-width:0}
 /* 手順リスト */
 .steps{margin:8px 0 16px 1.6em;padding:0;list-style:decimal}
 .steps li{margin:6px 0;line-height:1.7}
+/* 購入ボックス・要約枠のボタン */
+.buy{margin:16px 0}
+.buy-list{list-style:none;margin:0;padding:0;border:1px solid var(--line)}
+.buy-list li{display:flex;align-items:center;gap:12px;padding:10px 12px;border-top:1px solid var(--line);background:#fff}
+.buy-list li:first-child{border-top:0}
+.buy-info{flex:1;min-width:0}
+.buy-list .btn-s{flex:none;padding:10px 14px;font-size:13px;min-height:44px;box-sizing:border-box;line-height:22px}
+.answer-list li{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.btn-xs{flex:none;padding:6px 12px!important;font-size:13px;min-height:36px;line-height:22px;box-sizing:border-box}
+.off-link{display:block;margin-top:6px;font-size:12px;text-align:center}
+@media (max-width:640px){
+  .buy-list li{flex-wrap:wrap}
+  .buy-list .btn-s{width:100%;text-align:center}
+  .tbl.parts td.act{flex-direction:column}
+}
