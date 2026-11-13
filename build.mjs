@@ -155,6 +155,8 @@ ${noindex ? '<meta name="robots" content="noindex">\n' : ''}<meta name="descript
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/style.css">
 ${ld}
+${cfg.ga4Id ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(cfg.ga4Id)}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${esc(cfg.ga4Id)}');</script>` : ''}${cfg.vercelAnalytics ? `<script defer src="/_vercel/insights/script.js"></script>` : ''}
 </head>
 <body>
 <header class="site-head">
@@ -179,12 +181,13 @@ ${aside ? sidebar(ds) : ''}
 </div>
 <footer class="site-foot">
   <div class="wrap">
-    <p class="foot-links"><a href="/about/">運営者情報</a><a href="/privacy/">プライバシーポリシー・免責事項</a><a href="/contact/">お問い合わせ</a><a href="/parts/">部品番号一覧</a><a href="/guide/find-model-number/">型番の確認方法</a></p>
+    <p class="foot-links"><a href="/about/">運営者情報</a><a href="/privacy/">プライバシーポリシー・免責事項</a><a href="/contact/">お問い合わせ</a><a href="/parts/">部品番号一覧</a><a href="/guide/find-model-number/">型番の確認方法</a><a href="/compare/">部品の比較</a></p>
     <p class="foot-note">Amazonのアソシエイトとして、${esc(cfg.siteName)}は適格販売により収入を得ています。価格はメーカー直販サイトまたはメーカーカタログの掲載価格（税込）で、確認日時点のものです。購入前に販売ページで適用機種を必ずご確認ください。</p>
     <p class="copy">&copy; ${new Date().getFullYear()} ${esc(cfg.siteName)}</p>
   </div>
 </footer>
 <script src="/assets/search.js" defer></script>
+${cfg.ga4Id ? '<script src="/assets/track.js" defer></script>' : ''}
 ${scripts.map(s => `<script src="${s}" defer></script>`).join('\n')}
 </body>
 </html>`;
@@ -245,18 +248,29 @@ ${hasPrice ? `<td class="price">${p.price ? yen(p.price) : '—'}</td>` : ''}
 </div>`;
   }
 
+  // 交換めやすが月・シーズン単位の部品が2つ以上あるとき：1か月あたりの費用
+  let monthHtml = '';
+  const mcs = ps.filter(p => monthlyCost(p));
+  if (!ds.showCost && mcs.length >= 2) monthHtml = `<h2 class="h2">1か月あたりの費用</h2>
+<p>交換のめやすどおりに使った場合の、1か月あたりの費用です（${esc(priceLabel)} ÷ 交換のめやすの月数。1シーズン＝6か月、複数個入りは個数分の月数）。</p>
+<table class="tbl cmp"><thead><tr><th>部品</th><th>価格</th><th>交換のめやす</th><th>1か月あたり</th></tr></thead><tbody>
+${mcs.sort((a, b) => monthlyCost(a) - monthlyCost(b)).map(p => `<tr><td><a class="pn" href="${partUrl(p.id)}">${p.id}</a><br><span class="sub">${esc(p.packLabel || `${p.pack}個`)}</span></td><td class="price">${yen(p.price)}</td><td>${esc(lifeLabel(p))}</td><td class="price">約${yen(monthlyCost(p))}</td></tr>`).join('')}
+</tbody></table>${comparesOf(mcs[0].id).length ? `<p>違いをくわしく → ${comparesOf(mcs[0].id).map(([a, b]) => `<a href="${compareUrl(a, b)}">${a} と ${b} の違い</a>`).join('、')}</p>` : ''}`;
+
   // シャープ：交換頻度でまとめる
   let freqHtml = '';
-  if (ds.showFrequency) {
+  if (ds.showFrequency !== false) {
     const buckets = [
-      { name: '毎月', test: p => p.life && p.life.unit === 'month', note: 'いちばん買う頻度が高いもの。まとめ買いしておくと切らしません。' },
+      { name: '毎月', test: p => p.life && p.life.unit === 'month' && p.life.value <= 1, note: 'いちばん買う頻度が高いもの。まとめ買いしておくと切らしません。' },
+      { name: '数か月ごと', test: p => p.life && ((p.life.unit === 'month' && p.life.value > 1) || (p.life.unit === 'season' && p.life.value <= 1)), note: '年に何回か買い替えるもの。複数個入りを選ぶと注文の回数が減ります。' },
+      { name: '数シーズンごと', test: p => p.life && p.life.unit === 'season' && p.life.value > 1, note: 'シーズンの区切り（使い始めや片付けの前）に状態を確かめます。' },
       { name: '毎年', test: p => p.life && p.life.unit === 'year' && p.life.value === 1, note: '冬の加湿シーズン前に替えるのが目安です。' },
       { name: '数年に1回', test: p => p.life && p.life.unit === 'year' && p.life.value > 1 && p.life.value < 10, note: '' },
       { name: '約10年に1回', test: p => p.life && p.life.unit === 'year' && p.life.value >= 10, note: '本来は長持ちします。洗っても汚れやニオイが取れないときだけ交換します。' },
       { name: 'ランプが点滅したら', test: p => p.life && p.life.unit === 'lamp', note: '本体の交換ランプで知らせてくれます。' },
     ];
-    if (ps.some(p => p.life)) freqHtml = `<h2 class="h2">交換の頻度で分けると</h2>
-<p>${m.id} の消耗品を、メーカーが公表している交換めやすで並べ替えました。「フィルター交換」と言っても、毎月替えるものと10年もつものが混ざっています。</p>
+    if (ps.filter(p => p.life).length >= 2) freqHtml = `<h2 class="h2">交換の頻度で分けると</h2>
+<p>${m.id} の消耗品を、メーカーが公表している交換めやすで並べ替えました。${buckets.filter(b => ps.some(b.test)).length >= 2 ? '「フィルター交換」と言っても、替える時期は部品によって大きく違います。' : ''}</p>
 <table class="tbl freq"><thead><tr><th>頻度</th><th>部品</th><th>メモ</th></tr></thead><tbody>
 ${buckets.map(b => { const xs = ps.filter(b.test); return xs.length ? `<tr><th>${b.name}</th><td>${xs.map(p => `<a class="pn" href="${partUrl(p.id)}">${p.id}</a> <span class="sub">${esc(KINDS[p.kind].label)}</span>`).join('<br>')}</td><td class="sub">${esc(b.note)}</td></tr>` : ''; }).join('')}
 </tbody></table>`;
@@ -302,7 +316,7 @@ ${partRows}
 </table>
 <p class="sub">${hasPrice ? (ds.priceLabel ? `${priceLabel}は${esc(ds.sourceKind || 'メーカーカタログ')}記載の税込価格です。` : '直販価格はメーカー直販サイトの税込価格です。') : ''}Amazonの価格は出品者によって変わります。</p>
 
-${costHtml}${freqHtml}${ds.maker.id === 'dainichi' ? `<p>フィルターの交換時期の条件（「最大5シーズン」は月1回のクエン酸洗浄が前提）は → <a href="/guide/dainichi-filter-life/">ダイニチ加湿器のフィルター交換時期</a></p><p>お手入れタイプの洗い方（クエン酸4Lに約25g・30分〜2時間）は → <a href="/guide/dainichi-filter-citric-acid/">抗菌気化フィルターの洗い方</a></p>` : ''}${ds.maker.id === 'sharp' && ps.some(p => p.kind === 'humid') ? `<p>加湿フィルターは、交換する前に洗うと長持ちします。→ <a href="/guide/sharp-humidifier-filter-care/">クエン酸・重曹での洗い方</a></p>` : ''}
+${costHtml}${monthHtml}${freqHtml}${ds.maker.id === 'dainichi' ? `<p>フィルターの交換時期の条件（「最大5シーズン」は月1回のクエン酸洗浄が前提）は → <a href="/guide/dainichi-filter-life/">ダイニチ加湿器のフィルター交換時期</a></p><p>お手入れタイプの洗い方（クエン酸4Lに約25g・30分〜2時間）は → <a href="/guide/dainichi-filter-citric-acid/">抗菌気化フィルターの洗い方</a></p><p>互換品と迷っているなら → <a href="/guide/dainichi-filter-genuine-vs-compatible/">純正品と互換品の違い（ダイニチ公式の比較結果）</a></p>` : ''}${ds.maker.id === 'sharp' && ps.some(p => p.kind === 'humid') ? `<p>加湿フィルターは、交換する前に洗うと長持ちします。→ <a href="/guide/sharp-humidifier-filter-care/">クエン酸・重曹での洗い方</a></p>` : ''}
 
 <h2 class="h2">買う前に確認すること</h2>
 <ul class="notes">
@@ -337,7 +351,7 @@ function partPage(ds, p) {
   const srcs = p.source ? [[p.source, `${maker.name} 公式 ${p.id}`]] : ds.sourceUrl ? [[ds.sourceUrl, ds.sourceName]] : withPage.map(x => ds.modelList.find(m => m.id === x)).filter(m => m && m.source).map(m => [m.source, `${m.id} 取扱説明書`]);
 
   const body = `
-<h1 class="h1">${p.id} ${esc(p.name)} ${typeBadge(p)}</h1>
+<h1 class="h1">${p.id} ${esc(p.name)} ${typeBadge(p)}<span class="h1-sub">対応機種（適用機種）${p.models.length}機種</span></h1>
 <table class="tbl spec"><tbody>
 <tr><th>部品番号</th><td><strong class="pn-big">${p.id}</strong>${p.replaces ? `<span class="sub">（旧番号 ${p.replaces.join('・')} はこの番号に統合）</span>` : ''}</td></tr>
 <tr><th>部品名</th><td>${esc(p.name)}${p.typeLabel ? `（${esc(p.typeLabel)}）` : ''}${p.stockNote ? `<br><strong>${esc(p.stockNote)}</strong>` : ''}</td></tr>
@@ -352,6 +366,7 @@ ${p.variants ? `<tr><th>入数違い</th><td>${esc(p.variants)}</td></tr>` : ''}
   ${p.source ? `<a class="off-link" href="${esc(p.source)}" rel="noopener" target="_blank">公式通販で見る</a>` : ''}
 </div>
 
+${comparesOf(p.id).length ? `<p>比べて選ぶ：${comparesOf(p.id).map(([a, b]) => `<a href="${compareUrl(a, b)}">${a} と ${b} の違い</a>`).join('、')}</p>` : ''}
 ${pair ? `<h2 class="h2">${pair.id}（${esc(pair.typeLabel)}）との違い</h2>
 <p>同じ機種で使える気化フィルターに、${p.type === 'care' ? '洗わずに捨てられる使い捨てタイプ' : '洗って長く使うお手入れタイプ'}の <a href="${partUrl(pair.id)}">${pair.id}</a>（${yen(pair.price)}・${esc(pair.life.label)}）があります。${p.noCost ? '' : '5シーズン使った場合の費用比較は<a href="/guide/dainichi-filter-cost/">こちら</a>。'}</p>` : ''}
 
@@ -379,7 +394,7 @@ ${datasets.filter(d => d !== ds && d.maker.name === maker.name).map(d => `<p cla
 ${buyBox(ds, topPartsOf(ds, 6), `よく使われる${pw}（使える機種が多い順）`, `${esc(maker.name)}の${esc(maker.category)}で、適用機種の多い純正部品です。自分の機種に合うかは、下の一覧から型番を選んで確認してください。`)}
 <div class="jump">${groups.map(g => `<a href="#s-${g.key}">${esc(g.name)}</a>`).join('')}</div>
 ${groups.map(g => `<h2 class="h2" id="s-${g.key}">${esc(g.name)}<span class="h2-n">${g.models.length}機種</span></h2>
-<p class="sub">主なフィルター：${primaryOf(g).slice(0, 6).map(id => `<a href="${partUrl(id)}">${id}</a>（${esc(shortType(ds.partById[id]))}）`).join('、')}${more(primaryOf(g), 6)}</p>
+<p class="sub">主なフィルター：${primaryOf(g).slice(0, 6).map(id => `<a href="${partUrl(id)}">${id}</a>（${esc(shortType(ds.partById[id]))}・<a href="${esc(partAmazonUrl(maker.name, ds.partById[id]))}" rel="sponsored nofollow noopener" target="_blank">Amazon</a>）`).join('、')}${more(primaryOf(g), 6)}</p>
 <ul class="model-grid">${g.models.map(m => `<li><a href="${modelUrl(ds, m.id)}">${m.id}</a></li>`).join('')}</ul>`).join('')}
 <p class="src">出典：<a href="${esc(ds.sourceUrl || maker.officialShop)}" rel="noopener" target="_blank">${esc(ds.sourceName || `${maker.name} 公式サポート`)}</a>${ds.modelSources ? '・各機種の取扱説明書' : ''}（${fmtDate(ds.checkedAt)}確認）。ここにない形名は、まだ収録していないか、メーカーの部品供給が終わっている可能性があります。</p>`;
   return layout({
@@ -556,6 +571,50 @@ ${buyBox(ds, [...vapor].sort((a, b) => b.models.length - a.models.length).slice(
     title: 'ダイニチ加湿器のフィルター交換時期｜お手入れタイプ最大5シーズン・使い捨て3カ月の条件',
     desc: 'ダイニチ加湿器の抗菌気化フィルター（お手入れタイプ）は最大5シーズン、カンタン取替えフィルター（使い捨て）は3カ月。メーカーの前提条件、交換のサイン、機種別の部品番号と直販価格をまとめました。',
     canonical: U, ds, crumbs: [{ name: 'ダイニチの交換時期' }], body,
+  });
+}
+
+function dainichiCompatGuide(ds) {
+  const U = '/guide/dainichi-filter-genuine-vs-compatible/';
+  const SRC = 'https://www.dainichi-net.co.jp/products/mainichi-plus/46788/';
+  const vapor = [...ds.parts].filter(p => p.kind === 'vapor').sort((a, b) => b.models.length - a.models.length);
+  const body = `
+<h1 class="h1">ダイニチ加湿器のフィルター、純正品と互換品の違い<span class="h1-sub">メーカーが挙げる4つの点と、Amazonで純正品を見分ける方法</span></h1>
+<p class="lead">Amazonなどでは、ダイニチの気化フィルターと同じ形の「互換品」が純正品より安く売られています。ダイニチは公式サイトで、純正品と互換品を比べた試験の結果を公開しています。ここではその内容を要約し、純正品の部品番号と見分け方をまとめました。</p>
+
+<h2 class="h2">純正品と互換品とは</h2>
+<p>純正品はダイニチ工業が販売している気化フィルターです。互換品は、同じ機種に取り付けられるように他社が作ったものです。</p>
+
+<h2 class="h2">ダイニチ公式が挙げている違い（要約）</h2>
+<p class="sub">以下はダイニチ工業が自社で行った比較試験の結果として公開している内容です。カエドキで試験したものではありません。</p>
+<ol class="notes">
+<li><strong>加湿量</strong>：新品どうしで比べると、純正品は互換品（3メーカー）より加湿量が6〜9%程度多かったとしています。</li>
+<li><strong>電気代</strong>：互換品では、純正品に比べて電気代が3カ月で500円以上、1シーズン（6カ月）で1,000円以上多くかかるというシミュレーション結果を示しています。</li>
+<li><strong>クエン酸洗浄後の回復</strong>：6カ月洗わずに使ったあとクエン酸で洗った試験で、純正品は使い始めの性能まで戻り、互換品は約95%までだったとしています（ダイニチは月1回の洗浄を推奨）。</li>
+<li><strong>保証</strong>：本体の3年保証について、互換品のフィルターを使ったことによる故障は保証の対象外になる場合があるとしています。</li>
+</ol>
+<p class="src">出典：<a href="${SRC}" rel="noopener" target="_blank">ダイニチ工業「加湿器の気化フィルター、純正品と互換品は何がちがう？ 純正品をおススメする理由。」</a>（2026/11/14確認）</p>
+
+<h2 class="h2">Amazonで純正品を見分ける方法</h2>
+<ul class="notes">
+<li><strong>部品番号で確かめる</strong>：カエドキに載せているダイニチ純正の気化フィルターは、どれも「H0605」で始まる部品番号です（H060518 など）。純正品は商品名にこの番号が入っています。互換品の商品名にも純正の番号が「対応機種」として並ぶことがあるので、ブランド名（ダイニチ／Dainichi）と出品者もあわせて見ます。</li>
+<li><strong>色で確かめる</strong>：ダイニチの気化フィルターは、お手入れタイプが青、使い捨てタイプ（カンタン取替えフィルター）が赤紫です（ダイニチWebShopの記載）。</li>
+<li><strong>自分の機種に合う番号を先に調べる</strong>：機種ごとに使える部品番号が決まっています。<a href="${makerUrl(ds)}">ダイニチの機種一覧</a>から型番を選ぶと、合う純正品の番号が分かります。</li>
+</ul>
+
+${buyBox(ds, vapor.slice(0, 6), 'ダイニチ純正の気化フィルター（使える機種が多い順）', 'ボタンはAmazonの純正品の商品ページ、または部品番号での検索結果に移動します。')}
+
+<h2 class="h2">あわせて読む</h2>
+<ul class="notes">
+<li><a href="/guide/dainichi-filter-cost/">お手入れタイプと使い捨てタイプ、どちらが安い？（5シーズンの総額）</a></li>
+<li><a href="/compare/h060518-vs-h060524/">H060518 と H060524 の違い</a></li>
+<li><a href="/guide/dainichi-filter-life/">ダイニチ加湿器のフィルター交換時期</a></li>
+<li><a href="/guide/dainichi-filter-citric-acid/">お手入れタイプのクエン酸での洗い方</a></li>
+</ul>`;
+  return layout({
+    title: 'ダイニチ加湿器のフィルター 純正品と互換品の違い｜メーカー公表の比較結果と純正品の見分け方',
+    desc: 'ダイニチ加湿器の気化フィルターの純正品と互換品の違いを、ダイニチ公式の比較試験（加湿量・電気代・洗浄後の回復・保証）から要約。Amazonで純正品を見分ける方法と部品番号も。',
+    canonical: U, ds, pr: true, crumbs: [{ name: 'ダイニチ 加湿器', url: makerUrl(ds) }, { name: '純正品と互換品の違い' }], body,
   });
 }
 
@@ -774,6 +833,7 @@ function staticPages() {
 <p>Amazonへのリンクにはアフィリエイト用の識別子が含まれます。リンクから購入されても、購入者の支払額は変わりません。</p>
 <h2 class="h2">アクセス解析について</h2>
 <p>当サイトでは、サイトの改善のためにアクセス解析ツールを使用する場合があります。これらのツールはCookie等を使用してトラフィックデータを収集しますが、個人を特定する情報は含みません。Cookieはブラウザの設定で無効にできます。</p>
+${cfg.ga4Id ? '<p>現在、Google LLC の「Google アナリティクス」を使用しています。閲覧したページ、外部の販売サイトへのリンクを押したこと、ブラウザの種類などの情報が Google に送信されます。データの取り扱いは<a href="https://policies.google.com/technologies/partner-sites?hl=ja" rel="noopener" target="_blank">Google のポリシー</a>をご覧ください。</p>' : ''}${cfg.vercelAnalytics ? '<p>現在、Vercel Inc. の「Vercel Web Analytics」を使用しています。閲覧したページや参照元などが、個人を特定しない形で集計されます。</p>' : ''}
 <p>Amazonアソシエイト・プログラムでは、リンク経由の購入を計測するためにAmazonがCookieを使用します。</p>
 <h2 class="h2">免責事項</h2>
 <p>掲載している適用機種・価格・交換のめやすは、確認日時点のメーカー公表情報にもとづきますが、正確性を保証するものではありません。部品の購入前に、販売ページおよび取扱説明書で適用機種を必ずご確認ください。当サイトの情報を利用したことによる損害について、当サイトは責任を負いかねます。</p>
@@ -818,6 +878,76 @@ ${urls.map(u => `<url><loc>${SITE}${u}</loc><lastmod>${maxd(dateOf0(u), TEMPLATE
   fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nDisallow: /search/\nSitemap: ${SITE}/sitemap.xml\n`);
 }
 
+// ---------- 部品の比較ページ ----------
+// 比べるのはデータにある事実（価格・入数・交換めやす・適用機種）と、各データの出典の記載だけ
+const COMPARE = [
+  ['H060518', 'H060524', '同じ機種で使える、お手入れタイプと使い捨てタイプの気化フィルターです。ダイニチの加湿器は、どちらか一方を使います。'],
+  ['H060517', 'H060518'],
+  ['H060523', 'H060524'],
+  ['FZ-L75MF', 'FZ-Y80MF'],
+  ['FZ-AX80MF', 'FZ-Y80MF'],
+  ['FZ-D50HF', 'FZ-D50DF', 'シャープ公式の別売品では、集じんフィルターと脱臭フィルターは別の部品として分かれています。'],
+  ['MDC01S', 'MDC03SW', 'どちらも MONO シリーズ用です。公式の交換ガイドでは、除去物質数が「17+3」（MDC01S）と「11+3」（MDC03SW）に分かれています。'],
+  ['HGC9S', 'HGC9SW', '同じカートリッジの1個入り（HGC9S）と2個入り（HGC9SW）です。'],
+  ['CBC03W', 'CBC06', '公式の交換ガイドでは、3ヶ月交換タイプ（ホワイト）と6ヶ月交換タイプ（グレー）に分かれています。'],
+  ['FE-ZGE05', 'FE-ZGE07'],
+];
+const compareUrl = (a, b) => `/compare/${slug(a)}-vs-${slug(b)}/`;
+const comparesOf = id => COMPARE.filter(([a, b]) => a === id || b === id);
+// 価格 ÷ 交換めやすの月数（1シーズン＝6か月）。「1個あたり」の表記なら個数分の月数で割る
+const monthlyCost = p => { if (!p.price || !p.life || !['month', 'season'].includes(p.life.unit)) return null; const m = p.life.unit === 'season' ? p.life.value * 6 : p.life.value; return Math.round(p.price / (m * (p.pack > 1 ? p.pack : 1))); };
+function comparePage([aId, bId, note]) {
+  const A = partIndex[aId], B = partIndex[bId];
+  if (!A || !B) throw new Error(`比較の部品がない: ${aId} ${bId}`);
+  const ds = A.ds;
+  const ma = new Set(A.models), mb = new Set(B.models);
+  const both = A.models.filter(x => mb.has(x)), onlyA = A.models.filter(x => !mb.has(x)), onlyB = B.models.filter(x => !ma.has(x));
+  const mc = [monthlyCost(A), monthlyCost(B)];
+  const typeOf = p => p.kind === 'vapor' ? `気化フィルター（${p.type === 'care' ? 'お手入れ' : '使い捨て'}）` : KINDS[p.kind].label;
+  const modelLinks = (dsx, xs) => `<ul class="model-grid">${xs.map(x => dsx.hasPage.has(x) ? `<li><a href="${modelUrl(dsx, x)}">${x}</a></li>` : `<li><span>${x}</span></li>`).join('')}</ul>`;
+  const facts = [];
+  if (!both.length) facts.push(`<strong>使える機種が重なっていません。</strong>公式の適用機種表に、${aId} と ${bId} の両方が載っている機種はありません。どちらを買うかは、お使いの機種で決まります。`);
+  else if (!onlyA.length && !onlyB.length) facts.push(`<strong>使える機種は同じです（${both.length}機種）。</strong>`);
+  else facts.push(`両方が使える機種は ${both.length}機種。${aId} だけが ${onlyA.length}機種、${bId} だけが ${onlyB.length}機種です。`);
+  if (A.price && B.price) facts.push(`価格は ${aId} が ${yen(A.price)}${A.pack > 1 ? `（${A.pack}個入り）` : ''}、${bId} が ${yen(B.price)}${B.pack > 1 ? `（${B.pack}個入り）` : ''}。`);
+  facts.push(lifeLabel(A) !== lifeLabel(B) ? `交換のめやすは ${aId} が「${esc(lifeLabel(A))}」、${bId} が「${esc(lifeLabel(B))}」。` : `交換のめやすはどちらも「${esc(lifeLabel(A))}」。`);
+  if (mc[0] && mc[1]) facts.push(`交換のめやすどおりに使った場合の1か月あたりの費用は、${aId} が約${yen(mc[0])}、${bId} が約${yen(mc[1])}。`);
+  const row = (h, f) => `<tr><th>${h}</th><td>${f(A)}</td><td>${f(B)}</td></tr>`;
+  const body = `
+<h1 class="h1">${aId} と ${bId} の違い<span class="h1-sub">価格・交換時期・対応機種を比較（${esc(ds.maker.name)} ${esc(ds.maker.category)}）</span></h1>
+${note ? `<p class="lead">${esc(note)}</p>` : ''}
+<div class="answer"><p class="answer-h">違いのまとめ</p><ul>${facts.map(f => `<li>${f}</li>`).join('')}</ul></div>
+<table class="tbl cmp">
+<thead><tr><th></th><th><a class="pn" href="${partUrl(aId)}">${aId}</a></th><th><a class="pn" href="${partUrl(bId)}">${bId}</a></th></tr></thead>
+<tbody>
+${row('部品名', p => esc(p.name))}
+${row('種類', p => esc(typeOf(p)) + (p.typeLabel && p.kind !== 'bio' ? `<br><span class="sub">${esc(p.typeLabel)}</span>` : ''))}
+${row('入数', p => esc(p.packLabel || `${p.pack}個`))}
+${row(esc(ds.priceLabel || '直販価格'), p => p.price ? `<span class="price">${yen(p.price)}</span>${p.pack > 1 ? `<br><span class="sub">1個あたり ${yen(Math.round(p.price / p.pack))}</span>` : ''}` : '—<br><span class="sub">公式で確認できず</span>')}
+${row('交換のめやす', p => `${esc(lifeLabel(p))}<br><span class="sub">${esc(p.lifeNote || '')}</span>`)}
+${mc[0] && mc[1] ? row('1か月あたり', p => `約${yen(monthlyCost(p))}`) : ''}
+${row('使える機種', p => `${p.models.length}機種`)}
+${row('購入', p => amzBtn(ds, p))}
+</tbody></table>
+${mc[0] && mc[1] ? '<p class="calc-note">1か月あたりの費用は「価格 ÷ 交換のめやすの月数」で計算しました（1シーズン＝6か月、複数個入りは個数分の月数）。使い方や水質で交換の時期は変わります。</p>' : ''}
+${both.length ? `<h2 class="h2">両方が使える機種（${both.length}機種）</h2>${modelLinks(ds, both)}` : ''}
+${onlyA.length ? `<h2 class="h2">${aId} だけが使える機種（${onlyA.length}機種）</h2>${modelLinks(ds, onlyA)}` : ''}
+${onlyB.length ? `<h2 class="h2">${bId} だけが使える機種（${onlyB.length}機種）</h2>${modelLinks(B.ds, onlyB)}` : ''}
+${[aId, bId].includes('H060518') && [aId, bId].includes('H060524') ? '<p>5シーズン使った総額の比較は → <a href="/guide/dainichi-filter-cost/">お手入れタイプと使い捨てタイプの費用比較</a></p>' : ''}
+<p class="src">出典：<a href="${esc(ds.sourceUrl || ds.maker.officialShop)}" rel="noopener" target="_blank">${esc(ds.sourceName || `${ds.maker.name} 公式`)}</a>${A.source ? `、<a href="${esc(A.source)}" rel="noopener" target="_blank">${aId}</a>` : ''}${B.source ? `、<a href="${esc(B.source)}" rel="noopener" target="_blank">${bId}</a>` : ''}（${fmtDate(ds.checkedAt)}確認）</p>`;
+  return layout({
+    title: `${aId}と${bId}の違い｜価格・交換時期・対応機種を比較（${ds.maker.name} ${ds.maker.category}）`,
+    desc: `${ds.maker.name}の${aId}と${bId}の違いを、メーカー公表の価格・入数・交換のめやす・適用機種で比較。${both.length ? `両方使える機種は${both.length}機種。` : '使える機種は重なっていません。'}`,
+    canonical: compareUrl(aId, bId), ds, pr: true, crumbs: [{ name: '部品の比較', url: '/compare/' }, { name: `${aId}と${bId}` }], body,
+  });
+}
+function compareIndex() {
+  const body = `<h1 class="h1">交換部品の比較</h1>
+<p class="lead">番号が似ていて迷いやすい部品を、メーカー公表の価格・交換のめやす・適用機種で比べました。</p>
+<ul class="notes">${COMPARE.map(([a, b]) => `<li><a href="${compareUrl(a, b)}">${a} と ${b} の違い</a><span class="sub">（${esc(partIndex[a].ds.maker.name)} ${esc(partIndex[a].ds.maker.category)}）</span></li>`).join('')}</ul>`;
+  return layout({ title: `交換部品の比較一覧｜${cfg.siteName}`, desc: '似た番号の交換フィルター・カートリッジの違いを、価格・交換時期・対応機種で比較した一覧。', canonical: '/compare/', crumbs: [{ name: '部品の比較' }], body });
+}
+
 // ---------- 実行 ----------
 // 部品番号の重複チェック（URLが衝突するため）
 const seen = new Set();
@@ -837,9 +967,12 @@ for (const ds of datasets) {
   if (ds.maker.id === 'dainichi') { write('guide/dainichi-filter-cost/index.html', costGuide(ds)); urls.push('/guide/dainichi-filter-cost/'); }
   if (ds.maker.id === 'dainichi') { write('guide/dainichi-filter-life/index.html', dainichiLifeGuide(ds)); urls.push('/guide/dainichi-filter-life/'); }
   if (ds.maker.id === 'dainichi') { write('guide/dainichi-filter-citric-acid/index.html', dainichiCareGuide(ds)); urls.push('/guide/dainichi-filter-citric-acid/'); }
+  if (ds.maker.id === 'dainichi') { write('guide/dainichi-filter-genuine-vs-compatible/index.html', dainichiCompatGuide(ds)); urls.push('/guide/dainichi-filter-genuine-vs-compatible/'); }
   if (ds.maker.id === 'sharp') { write('guide/sharp-filter-schedule/index.html', sharpScheduleGuide(ds)); urls.push('/guide/sharp-filter-schedule/'); }
   if (ds.maker.id === 'sharp') { write('guide/sharp-humidifier-filter-care/index.html', sharpCareGuide(ds)); urls.push('/guide/sharp-humidifier-filter-care/'); }
 }
+write('compare/index.html', compareIndex()); urls.push('/compare/');
+for (const c of COMPARE) { write(`compare/${slug(c[0])}-vs-${slug(c[1])}/index.html`, comparePage(c)); urls.push(compareUrl(c[0], c[1])); }
 staticPages();
 assets();
 seo(urls);
