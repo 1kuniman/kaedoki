@@ -176,3 +176,4 @@ main{min-width:0}
   .buy-list .btn-s{width:100%;text-align:center}
   .tbl.parts td.act{flex-direction:column}
 }
+.h1-sub{display:block;font-size:14px;font-weight:400;color:var(--sub,#555);margin-top:4px}
