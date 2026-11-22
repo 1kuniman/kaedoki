@@ -57,8 +57,14 @@ function prepare(ds) {
   return { ...ds, seriesDefs: series, seriesOf, partById, modelList, hasPage: new Set(modelList.map(m => m.id)), parts: ds.parts.map(p => partById[p.id]) };
 }
 
-const allParts = datasets.flatMap(d => d.parts.map(p => ({ ...p, ds: d })));
+// shared: true の部品は、別のデータセットに本体（部品ページ）がある。部品ページは1つだけ作り、そこに適用機種を追記する
+const allParts = datasets.flatMap(d => d.parts.filter(p => !p.shared).map(p => ({ ...p, ds: d })));
 const partIndex = Object.fromEntries(allParts.map(p => [p.id, p]));
+const sharedUse = {};
+for (const d of datasets) for (const p of d.parts.filter(p => p.shared)) {
+  if (!partIndex[p.id]) throw new Error(`shared の部品の本体がない: ${p.id}`);
+  (sharedUse[p.id] ||= []).push({ ds: d, p });
+}
 
 // ---------- ユーティリティ ----------
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -283,7 +289,8 @@ ${buckets.map(b => { const xs = ps.filter(b.test); return xs.length ? `<tr><th>$
   const desc = `${maker.name} ${m.id}（${maker.category}）の${keyIds.length ? `${ds.partWord || 'フィルター'}交換に使う純正部品の部品番号は${keyIds.join('・')}${batIds.length ? `、交換バッテリーは${batIds.join('・')}` : ''}` : `交換バッテリーの部品番号は${batIds.join('・')}`}。${hasPrice ? `${priceLabel}と` : ''}交換のめやすをメーカー資料から確認できます。`;
   // 冒頭の結論：汚れ・ニオイで替えるフィルターを、交換めやすの短い順に
   const FIX = ['vapor', 'humid', 'humidpre', 'pre', 'ag', 'dust', 'deo', 'combo', 'set', 'pfilter', 'vfilter'];
-  const fixParts = ps.filter(p => FIX.includes(p.kind)).sort((a, b) => lifeMonths(a.life) - lifeMonths(b.life)).slice(0, 5);
+  const isPrim = p => (ds.primaryKinds || []).includes(p.kind);
+  const fixParts = ps.filter(p => FIX.includes(p.kind)).sort((a, b) => (ds.answerPrimaryFirst ? isPrim(b) - isPrim(a) : 0) || lifeMonths(a.life) - lifeMonths(b.life)).slice(0, 5);
   const fixLabel = p => p.kind === 'vapor' ? `気化フィルター（${p.type === 'care' ? 'お手入れ' : '使い捨て'}）` : ['pfilter', 'vfilter'].includes(p.kind) && p.name !== KINDS[p.kind].label ? `${KINDS[p.kind].label}（${p.name}）` : KINDS[p.kind].label;
   const vaporBoth = fixParts.some(p => p.kind === 'vapor' && p.type === 'care') && fixParts.some(p => p.kind === 'vapor' && p.type === 'disposable');
   const allLong = fixParts.every(p => p.life && ['year', 'season', 'none'].includes(p.life.unit) && lifeMonths(p.life) >= 60);
@@ -291,7 +298,7 @@ ${buckets.map(b => { const xs = ps.filter(b.test); return xs.length ? `<tr><th>$
 <p class="answer-h">フィルターが汚れた・臭うときに確認する部品</p>
 <ul class="answer-list">${fixParts.map(p => `<li><span>${esc(fixLabel(p))}：<a class="pn" href="${partUrl(p.id)}">${p.id}</a><span class="sub">（交換のめやす：${esc(lifeLabel(p))}${p.price ? `・${yen(p.price)}` : ''}）</span></span>${amzBtn(ds, p, 'Amazon', 'btn-amz btn-xs')}</li>`).join('')}</ul>
 ${vaporBoth ? '<p>気化フィルターは「お手入れタイプ」か「使い捨てタイプ」の<strong>どちらか一方</strong>を使います。お手入れタイプの「最大5シーズン」は、月1回のクエン酸洗浄をした場合の目安です。</p>' : ''}${allLong ? '<p>この機種のフィルターは、どれも交換の間隔が長い（または交換不要の）部品です。汚れやニオイが気になるときは、買い替える前に取扱説明書のお手入れ方法を確認してください。</p>' : ''}
-<p class="sub">交換のめやすの短い順。めやすはメーカー公表の値です。価格と購入先は下の表にあります。</p>
+<p class="sub">${ds.answerPrimaryFirst ? '' : '交換のめやすの短い順。'}めやすはメーカー公表の値です。価格と購入先は下の表にあります。</p>
 </div>` : '';
   const srcUrl = m.source || ds.sourceUrl || maker.officialShop;
   const srcName = ds.modelSourceLabel ? ds.modelSourceLabel.replace('{id}', m.id) : ds.modelSourceName ? ds.modelSourceName.replace('{id}', m.id) : m.source ? `${maker.name} ${m.id} 取扱説明書（PDF）` : ds.sourceName || `${maker.name} 公式 別売部品ページ`;
@@ -326,7 +333,7 @@ ${costHtml}${monthHtml}${freqHtml}${ds.maker.id === 'dainichi' ? `<p>フィル�
 ${maker.partialNote ? `<li>${esc(maker.partialNote)}</li>` : ''}
 </ul>
 
-${primary ? `<h2 class="h2">同じ${esc(KINDS[primary.kind].label)}（${primary.id}）が使える機種</h2>
+${primary && primary.models.length > 1 ? `<h2 class="h2">同じ${esc(KINDS[primary.kind].label)}（${primary.id}）が使える機種</h2>
 <p class="sub">${primary.id} は全${primary.models.length}機種で共通です。家に複数台あれば、まとめ買いできます。<a href="${partUrl(primary.id)}">全${primary.models.length}機種の一覧</a></p>
 ${siblings.length && siblings.length <= 40 ? `<ul class="model-grid">${siblings.map(x => `<li><a href="${modelUrl(ds, x)}">${x}</a></li>`).join('')}</ul>` : ''}` : ''}
 
@@ -375,6 +382,9 @@ ${pair ? `<h2 class="h2">${pair.id}（${esc(pair.typeLabel)}）との違い</h2>
 ${grouped.map(g => `<h3 class="h3">${esc(g.name)}</h3><ul class="model-grid">${g.models.map(x => `<li><a href="${modelUrl(ds, x.id)}">${x.id}</a></li>`).join('')}</ul>`).join('')}
 ${noPage.length ? `<h3 class="h3">その他の適用機種</h3><ul class="model-grid">${noPage.map(x => `<li><span>${x}</span></li>`).join('')}</ul>` : ''}
 
+${(sharedUse[p.id] || []).map(u => `<h2 class="h2">${esc(u.ds.maker.name)} ${esc(u.ds.maker.category)}での適用機種（${u.p.models.length}機種）</h2>
+<p class="sub">${esc(u.ds.sourceName)}に、${p.id} が使える機種として載っているものです（${fmtDate(u.ds.checkedAt)}確認）。</p>
+<ul class="model-grid">${u.p.models.map(x => u.ds.hasPage.has(x) ? `<li><a href="${modelUrl(u.ds, x)}">${x}</a></li>` : `<li><span>${x}</span></li>`).join('')}</ul>`).join('')}
 <p class="src">出典：${srcs.slice(0, 8).map(([u, n]) => `<a href="${esc(u)}" rel="noopener" target="_blank">${esc(n)}</a>`).join('、')}${srcs.length > 8 ? ` ほか${srcs.length - 8}件` : ''}（${fmtDate(ds.checkedAt)}確認）</p>`;
 
   return layout({ title, desc, canonical: partUrl(p.id), ds, pr: true, crumbs: [{ name: '部品番号一覧', url: '/parts/' }, { name: p.id }], body });
@@ -963,7 +973,7 @@ let nModels = 0;
 for (const ds of datasets) {
   write(`${ds.maker.id}/index.html`, makerPage(ds)); urls.push(makerUrl(ds));
   for (const m of ds.modelList) { write(`${ds.maker.id}/${slug(m.id)}/index.html`, modelPage(ds, m)); urls.push(modelUrl(ds, m.id)); nModels++; }
-  for (const p of ds.parts) { write(`parts/${slug(p.id)}/index.html`, partPage(ds, p)); urls.push(partUrl(p.id)); }
+  for (const p of ds.parts.filter(p => !p.shared)) { write(`parts/${slug(p.id)}/index.html`, partPage(ds, p)); urls.push(partUrl(p.id)); }
   if (ds.maker.id === 'dainichi') { write('guide/dainichi-filter-cost/index.html', costGuide(ds)); urls.push('/guide/dainichi-filter-cost/'); }
   if (ds.maker.id === 'dainichi') { write('guide/dainichi-filter-life/index.html', dainichiLifeGuide(ds)); urls.push('/guide/dainichi-filter-life/'); }
   if (ds.maker.id === 'dainichi') { write('guide/dainichi-filter-citric-acid/index.html', dainichiCareGuide(ds)); urls.push('/guide/dainichi-filter-citric-acid/'); }
