@@ -132,6 +132,8 @@ main{min-width:0}
 @media (max-width:860px){
   .cols{grid-template-columns:minmax(0,1fr)}
   .tbl.series th:nth-child(2),.tbl.series td:nth-child(2){display:none}
+  .tbl.series td:first-child{white-space:normal}
+  .tbl.series td{word-break:break-word}
   .head-inner{flex-direction:column;align-items:stretch;gap:8px}
   .logo{flex-direction:row;align-items:baseline;gap:10px}
   .head-search{max-width:none}
