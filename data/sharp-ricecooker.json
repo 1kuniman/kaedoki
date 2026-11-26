@@ -1,0 +1,2039 @@
+{
+ "maker": {
+  "id": "sharp-ricecooker",
+  "name": "シャープ",
+  "navName": "シャープ炊飯器",
+  "nameFull": "シャープ",
+  "category": "炊飯器",
+  "modelLabelHint": "形名は本体に貼られたラベルと、取扱説明書の表紙に書かれています。「KS-」から始まる英数字です。",
+  "modelNote": "形名の末尾の「-W」「-B」「-R」などは本体色を表す記号です。検索するときは省いて入力してください。内ぶたなど、本体色によって部品番号が違うものがあります。",
+  "partsPolicy": "シャープ公式の別売品ページには、購入はお買いあげの販売店かシャープ製品取扱店へ相談するよう書かれています。一部は公式ストア「COCORO STORE」でも購入できます。",
+  "partialNote": "部品番号と価格は、シャープ公式サポート「炊飯器 別売オプション品」の内容です。価格の記載がない部品は「—」と表示しています。Amazonのボタンは、部品番号で検索して出品が見つかった部品にだけ付けています（2026/11/26確認）。",
+  "officialShop": "https://jp.sharp/support/ricecooker/option.html",
+  "genuineNote": "内釜・内なべは機種ごとに部品番号が違います。Amazonでは部品番号が「234 380 0349」のように区切って書かれていることがあります。数字が同じかを照合してください。"
+ },
+ "checkedAt": "2026-11-26",
+ "sourceUrl": "https://jp.sharp/support/ricecooker/option.html",
+ "sourceName": "シャープ 炊飯器 別売オプション品",
+ "sourceKind": "メーカー公式の別売品検索",
+ "priceLabel": "希望小売価格",
+ "modelSourceUrl": "https://jp.sharp/support/ricecooker/option_result.html?productId={id}",
+ "modelSourceName": "シャープ {id} の別売オプション品",
+ "partWord": "内釜",
+ "makerH1": "シャープ 炊飯器の内釜・内ぶた・パッキン 機種別一覧",
+ "makerTitle": "シャープ 炊飯器の内釜・内ぶた・パッキン 型番別一覧｜KS-シリーズ78機種の部品番号と価格",
+ "makerDesc": "シャープの炊飯器（KS-シリーズ）の内釜（内なべ）・内ぶた・パッキンなどの部品を型番から探せます。78機種それぞれに合う純正部品の部品番号と希望小売価格を、メーカー公式の別売品情報から一覧にしています。",
+ "modelTitle": "{id} の内釜・内ぶた・パッキン｜部品番号と価格（シャープ 炊飯器）",
+ "primaryKinds": [
+  "pot"
+ ],
+ "answerKinds": [
+  "pot",
+  "lid"
+ ],
+ "answerTitle": "内釜（内なべ）・内ぶたを買い替えるときの部品",
+ "answerPrimaryFirst": true,
+ "hideLife": true,
+ "showFrequency": false,
+ "series": [
+  {
+   "re": "^KS-[A-E]",
+   "key": "ae",
+   "name": "KS-A〜D（KS-AC5・C5L・CF05E・DC5ほか）"
+  },
+  {
+   "re": "^KS-[FG]",
+   "key": "fg",
+   "name": "KS-F・G（KS-F5E8・FA10・GC5・GX10Aほか）"
+  },
+  {
+   "re": "^KS-H",
+   "key": "h",
+   "name": "KS-H（KS-H59・HA10・HF05B・HF10Bほか）"
+  },
+  {
+   "re": "^KS-[I-P]",
+   "key": "ip",
+   "name": "KS-I〜P（KS-KC5・MX10B・NC5・PX10Bほか）"
+  },
+  {
+   "re": "^KS-[S-Z]",
+   "key": "sz",
+   "name": "KS-S〜Z（KS-S10J・SF05H・WM10B・Z101）"
+  }
+ ],
+ "parts": [
+  {
+   "id": "2343800306",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4840,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-AC5",
+    "KS-BC5",
+    "KS-CC5",
+    "KS-DC5",
+    "KS-FC5",
+    "KS-GC5",
+    "KS-IC5"
+   ]
+  },
+  {
+   "id": "2343800308",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4510,
+   "amazonQuery": "2343800308",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E",
+    "KS-C5F",
+    "KS-C5G",
+    "KS-C5H",
+    "KS-C5J",
+    "KS-C5K",
+    "KS-C5L",
+    "KS-G5E1",
+    "KS-K500R"
+   ]
+  },
+  {
+   "id": "2343800340",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4510,
+   "amazonQuery": "2343800340",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-CF05A",
+    "KS-CF05B",
+    "KS-CF05C"
+   ]
+  },
+  {
+   "id": "2343800350",
+   "name": "内釜",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4510,
+   "asin": "B0GWCL6V16",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-CF05D",
+    "KS-CF05E"
+   ]
+  },
+  {
+   "id": "2343800354",
+   "name": "内釜",
+   "kind": "pot",
+   "pack": 1,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E5",
+    "KS-CS05J"
+   ]
+  },
+  {
+   "id": "2343800250",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4400,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-F102"
+   ]
+  },
+  {
+   "id": "2343800280",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 1760,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-F105"
+   ]
+  },
+  {
+   "id": "2343800251",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4950,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-F182"
+   ]
+  },
+  {
+   "id": "2343800281",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 3520,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-F185"
+   ]
+  },
+  {
+   "id": "2344250052",
+   "name": "蒸気キャップ",
+   "kind": "steam",
+   "pack": 1,
+   "price": 330,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-F105",
+    "KS-F185"
+   ]
+  },
+  {
+   "id": "2343800307",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4510,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-F5E2",
+    "KS-F5E3",
+    "KS-F5E4",
+    "KS-F5E5",
+    "KS-H5E8",
+    "KS-H5E9"
+   ]
+  },
+  {
+   "id": "2343800290",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 1760,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-FA10"
+   ]
+  },
+  {
+   "id": "2343800292",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 6380,
+   "asin": "B0GBD61K5Q",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-FA18"
+   ]
+  },
+  {
+   "id": "2344250059",
+   "name": "蒸気キャップA",
+   "kind": "steam",
+   "pack": 1,
+   "price": 660,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-FA10",
+    "KS-FA18"
+   ]
+  },
+  {
+   "id": "2344250060",
+   "name": "蒸気キャップB",
+   "kind": "steam",
+   "pack": 1,
+   "price": 660,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-FA10",
+    "KS-FA18"
+   ]
+  },
+  {
+   "id": "2343920091",
+   "name": "蒸気キャップパッキン",
+   "kind": "packing",
+   "pack": 1,
+   "price": 880,
+   "amazonQuery": "2343920091",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-FA10",
+    "KS-FA18"
+   ]
+  },
+  {
+   "id": "2341170649",
+   "name": "内ぶた",
+   "kind": "lid",
+   "pack": 1,
+   "price": 3080,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-GX10A",
+    "KS-PX10A",
+    "KS-PX10B"
+   ]
+  },
+  {
+   "id": "2349400001",
+   "name": "むし板",
+   "kind": "acc",
+   "pack": 1,
+   "price": 2420,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-GX10A",
+    "KS-PX10A",
+    "KS-PX10B"
+   ]
+  },
+  {
+   "id": "2341080039",
+   "name": "しゃもじ受け",
+   "kind": "acc",
+   "pack": 1,
+   "price": 1320,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-GX10A",
+    "KS-PX10A",
+    "KS-PX10B"
+   ]
+  },
+  {
+   "id": "2349460023",
+   "name": "しゃもじ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 880,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-GX10A",
+    "KS-PX10A",
+    "KS-PX10B"
+   ]
+  },
+  {
+   "id": "2349340027",
+   "name": "計量カップ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 660,
+   "asin": "B0FRYXK5CY",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-GX10A",
+    "KS-PX10A",
+    "KS-PX10B"
+   ]
+  },
+  {
+   "id": "2343800224",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4400,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H101"
+   ]
+  },
+  {
+   "id": "2343800227",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4950,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H181"
+   ]
+  },
+  {
+   "id": "2343920072",
+   "name": "内ぶたパッキン",
+   "kind": "packing",
+   "pack": 1,
+   "price": 660,
+   "asin": "B01MT1DMOA",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H53",
+    "KS-H54",
+    "KS-H55",
+    "KS-H56",
+    "KS-H57",
+    "KS-H58",
+    "KS-H59",
+    "KS-HA5",
+    "KS-HB5",
+    "KS-HC5",
+    "KS-HD5"
+   ]
+  },
+  {
+   "id": "2343440100",
+   "name": "内ぶた",
+   "kind": "lid",
+   "pack": 1,
+   "price": 1430,
+   "amazonQuery": "2343440100",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H53"
+   ]
+  },
+  {
+   "id": "2343800240",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4400,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H53"
+   ]
+  },
+  {
+   "id": "2341110030",
+   "name": "つゆ受け",
+   "kind": "acc",
+   "pack": 1,
+   "price": 330,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H53"
+   ]
+  },
+  {
+   "id": "2343440101",
+   "name": "内ぶた",
+   "kind": "lid",
+   "pack": 1,
+   "price": 550,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H54",
+    "KS-H55",
+    "KS-H56",
+    "KS-H57",
+    "KS-H58",
+    "KS-H59",
+    "KS-HA5",
+    "KS-HB5",
+    "KS-HC5",
+    "KS-HD5"
+   ]
+  },
+  {
+   "id": "2343800264",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 6600,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H54"
+   ]
+  },
+  {
+   "id": "2343800270",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 6050,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H55",
+    "KS-H56"
+   ]
+  },
+  {
+   "id": "2341110036",
+   "name": "つゆ受け",
+   "kind": "acc",
+   "pack": 1,
+   "price": 110,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H54",
+    "KS-H55",
+    "KS-H56"
+   ]
+  },
+  {
+   "id": "2343800284",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 5170,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H57",
+    "KS-H58"
+   ]
+  },
+  {
+   "id": "2343800288",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 6050,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H59"
+   ]
+  },
+  {
+   "id": "2341170656",
+   "name": "内ぶた",
+   "kind": "lid",
+   "pack": 1,
+   "price": 4180,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-HA10"
+   ]
+  },
+  {
+   "id": "2343800333",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4180,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-HA10"
+   ]
+  },
+  {
+   "id": "2343800294",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 7040,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-HA5",
+    "KS-HB5",
+    "KS-HC5",
+    "KS-HD5"
+   ]
+  },
+  {
+   "id": "2343250017",
+   "name": "つゆ受け",
+   "kind": "acc",
+   "pack": 1,
+   "price": 330,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H57",
+    "KS-H58",
+    "KS-H59",
+    "KS-HA5",
+    "KS-HB5",
+    "KS-HC5",
+    "KS-HD5"
+   ]
+  },
+  {
+   "id": "2349460014",
+   "name": "しゃもじ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 220,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-F105",
+    "KS-FA10",
+    "KS-FA18",
+    "KS-H53",
+    "KS-H54",
+    "KS-H55",
+    "KS-H56",
+    "KS-H57",
+    "KS-H58",
+    "KS-H59",
+    "KS-HA5",
+    "KS-HB5",
+    "KS-HC5",
+    "KS-HD5"
+   ]
+  },
+  {
+   "id": "2341110037",
+   "name": "計量カップ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 110,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-F105",
+    "KS-FA10",
+    "KS-FA18",
+    "KS-H53",
+    "KS-H54",
+    "KS-H55",
+    "KS-H56",
+    "KS-H57",
+    "KS-H58",
+    "KS-H59",
+    "KS-HA5",
+    "KS-HB5",
+    "KS-HC5",
+    "KS-HD5"
+   ]
+  },
+  {
+   "id": "2343800349",
+   "name": "内釜",
+   "kind": "pot",
+   "pack": 1,
+   "price": 5500,
+   "asin": "B0GKMXBH1M",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H5E7",
+    "KS-HF05B",
+    "KS-SF05H"
+   ]
+  },
+  {
+   "id": "2341170678",
+   "name": "内ぶた(パッキン付き)",
+   "kind": "lid",
+   "pack": 1,
+   "typeLabel": "ホワイト系",
+   "price": 4840,
+   "asin": "B0FWR49QWJ",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H5E7",
+    "KS-HF05B",
+    "KS-SF05H"
+   ]
+  },
+  {
+   "id": "2341170676",
+   "name": "内ぶた(パッキン付き)",
+   "kind": "lid",
+   "pack": 1,
+   "typeLabel": "ブラック系",
+   "price": 4840,
+   "asin": "B0GQFFLPZW",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H5E7",
+    "KS-HF05B"
+   ]
+  },
+  {
+   "id": "2345000069",
+   "name": "電源コード",
+   "kind": "acc",
+   "pack": 1,
+   "price": 660,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H5E7",
+    "KS-HF05B",
+    "KS-SF05H"
+   ]
+  },
+  {
+   "id": "2341170672",
+   "name": "内ぶた(パッキン付き)",
+   "kind": "lid",
+   "pack": 1,
+   "price": 4510,
+   "amazonQuery": "2341170672",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-HF10B"
+   ]
+  },
+  {
+   "id": "2343920140",
+   "name": "内ぶた用パッキン",
+   "kind": "packing",
+   "pack": 1,
+   "price": 440,
+   "asin": "B0H6WL4JPL",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-HF10B"
+   ]
+  },
+  {
+   "id": "2343800346",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 9350,
+   "amazonQuery": "2343800346",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-HF10B"
+   ]
+  },
+  {
+   "id": "2343800255",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4400,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-M102"
+   ]
+  },
+  {
+   "id": "2343800257",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4950,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-M182"
+   ]
+  },
+  {
+   "id": "2344250045",
+   "name": "蒸気キャップ",
+   "kind": "steam",
+   "pack": 1,
+   "price": 660,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-F102",
+    "KS-F182",
+    "KS-H101",
+    "KS-H181",
+    "KS-M102",
+    "KS-M182"
+   ]
+  },
+  {
+   "id": "2349340014",
+   "name": "しゃもじ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 330,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-F102",
+    "KS-F182",
+    "KS-F185",
+    "KS-H101",
+    "KS-H181",
+    "KS-M102",
+    "KS-M182"
+   ]
+  },
+  {
+   "id": "2349340008",
+   "name": "計量カップ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 110,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-F102",
+    "KS-F182",
+    "KS-F185",
+    "KS-H101",
+    "KS-H181"
+   ]
+  },
+  {
+   "id": "2349340013",
+   "name": "計量カップ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 220,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-M102",
+    "KS-M182"
+   ]
+  },
+  {
+   "id": "2341170650",
+   "name": "内ぶた",
+   "kind": "lid",
+   "pack": 1,
+   "price": 4840,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-MX10B"
+   ]
+  },
+  {
+   "id": "2341170655",
+   "name": "内ぶた",
+   "kind": "lid",
+   "pack": 1,
+   "price": 5170,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-MX18B"
+   ]
+  },
+  {
+   "id": "2343320011",
+   "name": "蒸気口ユニット",
+   "kind": "steam",
+   "pack": 1,
+   "typeLabel": "ホワイト系",
+   "price": 1760,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-MX10B",
+    "KS-MX18B"
+   ]
+  },
+  {
+   "id": "2343320010",
+   "name": "蒸気口ユニット",
+   "kind": "steam",
+   "pack": 1,
+   "typeLabel": "レッド系",
+   "price": 1760,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-MX10B",
+    "KS-MX18B"
+   ]
+  },
+  {
+   "id": "2343800274",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 20350,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-P104"
+   ]
+  },
+  {
+   "id": "2342210077",
+   "name": "ふた加熱板",
+   "kind": "lid",
+   "pack": 1,
+   "price": 2640,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-P104"
+   ]
+  },
+  {
+   "id": "2343800272",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 21450,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-P184"
+   ]
+  },
+  {
+   "id": "2342210076",
+   "name": "ふた加熱板",
+   "kind": "lid",
+   "pack": 1,
+   "price": 2640,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-P184"
+   ]
+  },
+  {
+   "id": "2341080036",
+   "name": "しゃもじ受け",
+   "kind": "acc",
+   "pack": 1,
+   "price": 220,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-P104",
+    "KS-P184"
+   ]
+  },
+  {
+   "id": "2349460018",
+   "name": "しゃもじ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 330,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-P104",
+    "KS-P184"
+   ]
+  },
+  {
+   "id": "2349340020",
+   "name": "計量カップ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 550,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-P104",
+    "KS-P184"
+   ]
+  },
+  {
+   "id": "2341170635",
+   "name": "内ぶた",
+   "kind": "lid",
+   "pack": 1,
+   "price": 9900,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-PC10"
+   ]
+  },
+  {
+   "id": "2343800300",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 22000,
+   "amazonQuery": "2343800300",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-PC10"
+   ]
+  },
+  {
+   "id": "2341100502",
+   "name": "むし板",
+   "kind": "acc",
+   "pack": 1,
+   "price": 4180,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-PC10"
+   ]
+  },
+  {
+   "id": "2341170634",
+   "name": "内ぶた",
+   "kind": "lid",
+   "pack": 1,
+   "price": 10450,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-PC18"
+   ]
+  },
+  {
+   "id": "2343800299",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 25300,
+   "amazonQuery": "2343800299",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-PC18"
+   ]
+  },
+  {
+   "id": "2341100501",
+   "name": "むし板",
+   "kind": "acc",
+   "pack": 1,
+   "price": 4180,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-PC18"
+   ]
+  },
+  {
+   "id": "2341080038",
+   "name": "しゃもじ受け",
+   "kind": "acc",
+   "pack": 1,
+   "price": 1320,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-PC10",
+    "KS-PC18"
+   ]
+  },
+  {
+   "id": "2349460020",
+   "name": "しゃもじ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 2420,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-PC10",
+    "KS-PC18"
+   ]
+  },
+  {
+   "id": "2341110038",
+   "name": "計量カップ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 1980,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-PC10",
+    "KS-PC18"
+   ]
+  },
+  {
+   "id": "2343800305",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4510,
+   "amazonQuery": "2343800305",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-S10E",
+    "KS-S10J",
+    "KS-Z101"
+   ]
+  },
+  {
+   "id": "2343920099",
+   "name": "蒸気パッキン",
+   "kind": "packing",
+   "pack": 1,
+   "price": 330,
+   "amazonQuery": "2343920099",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-S10E",
+    "KS-S10J",
+    "KS-Z101"
+   ]
+  },
+  {
+   "id": "2344250067",
+   "name": "蒸気キャップA",
+   "kind": "steam",
+   "pack": 1,
+   "price": 660,
+   "amazonQuery": "2344250067",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-S10E",
+    "KS-S10J",
+    "KS-Z101"
+   ]
+  },
+  {
+   "id": "2344250068",
+   "name": "蒸気キャップB",
+   "kind": "steam",
+   "pack": 1,
+   "price": 660,
+   "amazonQuery": "2344250068",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-S10E",
+    "KS-S10J",
+    "KS-Z101"
+   ]
+  },
+  {
+   "id": "2349460021",
+   "name": "しゃもじ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 440,
+   "asin": "B0G4GL3Z37",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H5E7",
+    "KS-HF05B",
+    "KS-S10E",
+    "KS-S10J",
+    "KS-SF05H",
+    "KS-Z101"
+   ]
+  },
+  {
+   "id": "2349340025",
+   "name": "計量カップ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 330,
+   "amazonQuery": "2349340025",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-H5E7",
+    "KS-HF05B",
+    "KS-S10E",
+    "KS-S10J",
+    "KS-SF05H",
+    "KS-Z101"
+   ]
+  },
+  {
+   "id": "2343800342",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4510,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-F5E6",
+    "KS-F5E7"
+   ]
+  },
+  {
+   "id": "2343800352",
+   "name": "内釜",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4510,
+   "asin": "B0HNMXZX47",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E2",
+    "KS-C5E4",
+    "KS-F5E8"
+   ]
+  },
+  {
+   "id": "2343800343",
+   "name": "内なべ",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4840,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-JC5",
+    "KS-KC5"
+   ]
+  },
+  {
+   "id": "2343920131",
+   "name": "蒸気口ユニットパッキン",
+   "kind": "packing",
+   "pack": 1,
+   "price": 660,
+   "asin": "B0G38TWJ8R",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-CF05A",
+    "KS-CF05B",
+    "KS-F5E6",
+    "KS-F5E7",
+    "KS-JC5",
+    "KS-KC5"
+   ]
+  },
+  {
+   "id": "2343920129",
+   "name": "内ぶたパッキン",
+   "kind": "packing",
+   "pack": 1,
+   "price": 660,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-CF05A",
+    "KS-CF05B",
+    "KS-F5E6",
+    "KS-F5E7",
+    "KS-JC5",
+    "KS-KC5"
+   ]
+  },
+  {
+   "id": "2341170666",
+   "name": "内ぶた・蒸気口ユニット",
+   "kind": "lid",
+   "pack": 1,
+   "typeLabel": "ホワイト系。蒸気口ユニットと中央のパッキンが付いたもの",
+   "price": 3300,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-CF05A",
+    "KS-CF05B",
+    "KS-CF05C",
+    "KS-F5E6",
+    "KS-F5E7",
+    "KS-JC5",
+    "KS-KC5"
+   ]
+  },
+  {
+   "id": "2341170667",
+   "name": "内ぶた・蒸気口ユニット",
+   "kind": "lid",
+   "pack": 1,
+   "typeLabel": "ブラック系。蒸気口ユニットと中央のパッキンが付いたもの",
+   "price": 3300,
+   "amazonQuery": "2341170667",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-CF05A",
+    "KS-CF05B",
+    "KS-CF05C",
+    "KS-F5E6",
+    "KS-F5E7",
+    "KS-JC5",
+    "KS-KC5"
+   ]
+  },
+  {
+   "id": "2349460024",
+   "name": "しゃもじ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 660,
+   "amazonQuery": "2349460024",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-CF05A",
+    "KS-CF05B",
+    "KS-CF05C",
+    "KS-F5E6",
+    "KS-F5E7",
+    "KS-HF10B",
+    "KS-JC5",
+    "KS-KC5"
+   ]
+  },
+  {
+   "id": "2349340028",
+   "name": "計量カップ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 660,
+   "amazonQuery": "2349340028",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-CF05A",
+    "KS-CF05B",
+    "KS-CF05C",
+    "KS-F5E6",
+    "KS-F5E7",
+    "KS-HF10B",
+    "KS-JC5",
+    "KS-KC5",
+    "KS-WM10B"
+   ]
+  },
+  {
+   "id": "2343800344",
+   "name": "内釜",
+   "kind": "pot",
+   "pack": 1,
+   "price": 9350,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-WM10B"
+   ]
+  },
+  {
+   "id": "2341740126",
+   "name": "内ぶたつまみ",
+   "kind": "lid",
+   "pack": 1,
+   "price": 1760,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-WM10B"
+   ]
+  },
+  {
+   "id": "2343920137",
+   "name": "蒸気口パッキン",
+   "kind": "packing",
+   "pack": 1,
+   "typeLabel": "内ぶたに取り付けるパッキン",
+   "price": 1100,
+   "amazonQuery": "2343920137",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-WM10B"
+   ]
+  },
+  {
+   "id": "2343920135",
+   "name": "蒸気ダクトパッキン",
+   "kind": "packing",
+   "pack": 1,
+   "typeLabel": "蒸気ダクトと組み合わせると「蒸気口ユニット」になる",
+   "price": 880,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-WM10B"
+   ]
+  },
+  {
+   "id": "2343320014",
+   "name": "蒸気ダクト",
+   "kind": "steam",
+   "pack": 1,
+   "typeLabel": "蒸気ダクトパッキンと組み合わせると「蒸気口ユニット」になる",
+   "price": 1320,
+   "amazonQuery": "2343320014",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-WM10B"
+   ]
+  },
+  {
+   "id": "2343800353",
+   "name": "内釜",
+   "kind": "pot",
+   "pack": 1,
+   "price": 4840,
+   "asin": "B0GKV6VZ5M",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-LC5",
+    "KS-MC5",
+    "KS-NC5"
+   ]
+  },
+  {
+   "id": "2341170688",
+   "name": "内ぶた・蒸気口ユニット",
+   "kind": "lid",
+   "pack": 1,
+   "typeLabel": "ホワイト系。蒸気口ユニットと中央のパッキンが付いたもの",
+   "price": 3300,
+   "asin": "B0GQK3RRN7",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E2",
+    "KS-C5E4",
+    "KS-CF05D",
+    "KS-MC5",
+    "KS-NC5"
+   ]
+  },
+  {
+   "id": "2341170689",
+   "name": "内ぶた・蒸気口ユニット",
+   "kind": "lid",
+   "pack": 1,
+   "typeLabel": "ブラック系。蒸気口ユニットと中央のパッキンが付いたもの",
+   "price": 3300,
+   "asin": "B0GQFK5HQN",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E2",
+    "KS-C5E4",
+    "KS-CF05D",
+    "KS-MC5",
+    "KS-NC5"
+   ]
+  },
+  {
+   "id": "2341170684",
+   "name": "内ぶた・蒸気口ユニット",
+   "kind": "lid",
+   "pack": 1,
+   "typeLabel": "ホワイト系。蒸気口ユニットと中央のパッキンが付いたもの",
+   "price": 3300,
+   "amazonQuery": "2341170684",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-CF05E",
+    "KS-F5E8",
+    "KS-LC5"
+   ]
+  },
+  {
+   "id": "2341170685",
+   "name": "内ぶた・蒸気口ユニット",
+   "kind": "lid",
+   "pack": 1,
+   "typeLabel": "ブラック系。蒸気口ユニットと中央のパッキンが付いたもの",
+   "price": 3300,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-CF05E",
+    "KS-F5E8",
+    "KS-LC5"
+   ]
+  },
+  {
+   "id": "2341170691",
+   "name": "内ぶた・蒸気口ユニット",
+   "kind": "lid",
+   "pack": 1,
+   "typeLabel": "ホワイト系",
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E5",
+    "KS-CS05J"
+   ]
+  },
+  {
+   "id": "2341170690",
+   "name": "内ぶた・蒸気口ユニット",
+   "kind": "lid",
+   "pack": 1,
+   "typeLabel": "ブラック系",
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E5",
+    "KS-CS05J"
+   ]
+  },
+  {
+   "id": "2349460025",
+   "name": "しゃもじ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 660,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E2",
+    "KS-C5E4",
+    "KS-CF05D",
+    "KS-CF05E",
+    "KS-F5E8",
+    "KS-LC5",
+    "KS-MC5",
+    "KS-NC5"
+   ]
+  },
+  {
+   "id": "2349460026",
+   "name": "しゃもじ",
+   "kind": "acc",
+   "pack": 1,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E5",
+    "KS-CS05J"
+   ]
+  },
+  {
+   "id": "2349340029",
+   "name": "計量カップ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 660,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E2",
+    "KS-C5E4",
+    "KS-CF05D",
+    "KS-CF05E",
+    "KS-F5E8",
+    "KS-LC5",
+    "KS-MC5",
+    "KS-NC5"
+   ]
+  },
+  {
+   "id": "2349340030",
+   "name": "計量カップ",
+   "kind": "acc",
+   "pack": 1,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E5",
+    "KS-CS05J"
+   ]
+  },
+  {
+   "id": "2343920103",
+   "name": "蒸気キャップパッキン",
+   "kind": "packing",
+   "pack": 1,
+   "price": 440,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-AC5",
+    "KS-BC5",
+    "KS-C5E",
+    "KS-C5F",
+    "KS-C5G",
+    "KS-C5H",
+    "KS-C5J",
+    "KS-C5K",
+    "KS-C5L",
+    "KS-CC5",
+    "KS-DC5",
+    "KS-F5E2",
+    "KS-F5E3",
+    "KS-F5E4",
+    "KS-F5E5",
+    "KS-FC5",
+    "KS-G5E1",
+    "KS-GC5",
+    "KS-H5E8",
+    "KS-H5E9",
+    "KS-IC5",
+    "KS-K500R"
+   ]
+  },
+  {
+   "id": "2344250069",
+   "name": "蒸気キャップA",
+   "kind": "steam",
+   "pack": 1,
+   "typeLabel": "ブラック系・四角形",
+   "price": 660,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E",
+    "KS-C5F",
+    "KS-C5G",
+    "KS-C5H",
+    "KS-C5J",
+    "KS-C5K",
+    "KS-C5L",
+    "KS-FC5",
+    "KS-GC5",
+    "KS-IC5",
+    "KS-K500R"
+   ]
+  },
+  {
+   "id": "2344250071",
+   "name": "蒸気キャップA",
+   "kind": "steam",
+   "pack": 1,
+   "typeLabel": "四角形",
+   "price": 660,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-AC5",
+    "KS-BC5",
+    "KS-C5E",
+    "KS-C5F",
+    "KS-C5G",
+    "KS-C5H",
+    "KS-C5J",
+    "KS-C5K",
+    "KS-C5L",
+    "KS-CC5",
+    "KS-DC5",
+    "KS-F5E2",
+    "KS-F5E3",
+    "KS-F5E4",
+    "KS-F5E5",
+    "KS-G5E1",
+    "KS-H5E8",
+    "KS-H5E9",
+    "KS-IC5"
+   ]
+  },
+  {
+   "id": "2344250070",
+   "name": "蒸気キャップB",
+   "kind": "steam",
+   "pack": 1,
+   "typeLabel": "ブラック系・円形",
+   "price": 660,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E",
+    "KS-C5F",
+    "KS-C5G",
+    "KS-C5H",
+    "KS-C5J",
+    "KS-C5K",
+    "KS-C5L",
+    "KS-FC5",
+    "KS-GC5",
+    "KS-IC5",
+    "KS-K500R"
+   ]
+  },
+  {
+   "id": "2344250072",
+   "name": "蒸気キャップB",
+   "kind": "steam",
+   "pack": 1,
+   "typeLabel": "円形",
+   "price": 440,
+   "amazonQuery": "2344250072",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-AC5",
+    "KS-BC5",
+    "KS-C5E",
+    "KS-C5F",
+    "KS-C5G",
+    "KS-C5H",
+    "KS-C5J",
+    "KS-C5K",
+    "KS-C5L",
+    "KS-CC5",
+    "KS-DC5",
+    "KS-F5E2",
+    "KS-F5E3",
+    "KS-F5E4",
+    "KS-F5E5",
+    "KS-G5E1",
+    "KS-H5E8",
+    "KS-H5E9",
+    "KS-IC5"
+   ]
+  },
+  {
+   "id": "2343920106",
+   "name": "蒸気パッキン",
+   "kind": "packing",
+   "pack": 1,
+   "typeLabel": "内ぶた下側のパッキン",
+   "price": 440,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-AC5",
+    "KS-BC5",
+    "KS-C5E",
+    "KS-C5F",
+    "KS-C5G",
+    "KS-C5H",
+    "KS-C5J",
+    "KS-C5K",
+    "KS-C5L",
+    "KS-CC5",
+    "KS-DC5",
+    "KS-F5E2",
+    "KS-F5E3",
+    "KS-F5E4",
+    "KS-F5E5",
+    "KS-FC5",
+    "KS-G5E1",
+    "KS-GC5",
+    "KS-H5E8",
+    "KS-H5E9",
+    "KS-IC5",
+    "KS-K500R"
+   ]
+  },
+  {
+   "id": "2343920105",
+   "name": "内ぶたパッキン",
+   "kind": "packing",
+   "pack": 1,
+   "typeLabel": "内ぶた下側のパッキン",
+   "price": 440,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-AC5",
+    "KS-BC5",
+    "KS-C5E",
+    "KS-C5F",
+    "KS-C5G",
+    "KS-C5H",
+    "KS-C5J",
+    "KS-C5K",
+    "KS-C5L",
+    "KS-CC5",
+    "KS-DC5",
+    "KS-F5E2",
+    "KS-F5E3",
+    "KS-F5E4",
+    "KS-F5E5",
+    "KS-FC5",
+    "KS-G5E1",
+    "KS-GC5",
+    "KS-H5E8",
+    "KS-H5E9",
+    "KS-IC5",
+    "KS-K500R"
+   ]
+  },
+  {
+   "id": "2343440109",
+   "name": "内ぶた",
+   "kind": "lid",
+   "pack": 1,
+   "typeLabel": "パッキンは付いていません",
+   "price": 1320,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-AC5",
+    "KS-BC5",
+    "KS-C5E",
+    "KS-C5F",
+    "KS-C5G",
+    "KS-CC5",
+    "KS-G5E1",
+    "KS-H5E8",
+    "KS-H5E9",
+    "KS-K500R"
+   ]
+  },
+  {
+   "id": "2343440124",
+   "name": "内ぶた",
+   "kind": "lid",
+   "pack": 1,
+   "typeLabel": "パッキンは付いていません",
+   "price": 1320,
+   "amazonQuery": "2343440124",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5H",
+    "KS-C5J",
+    "KS-C5K",
+    "KS-C5L",
+    "KS-DC5",
+    "KS-F5E2",
+    "KS-F5E3",
+    "KS-F5E4",
+    "KS-F5E5",
+    "KS-FC5",
+    "KS-GC5",
+    "KS-IC5"
+   ]
+  },
+  {
+   "id": "2349460022",
+   "name": "しゃもじ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 660,
+   "asin": "B0FX9591KT",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E",
+    "KS-C5F",
+    "KS-C5G",
+    "KS-C5H",
+    "KS-C5J",
+    "KS-C5K",
+    "KS-C5L",
+    "KS-F5E5",
+    "KS-HA10",
+    "KS-IC5",
+    "KS-MX10B",
+    "KS-MX18B"
+   ]
+  },
+  {
+   "id": "2349340026",
+   "name": "計量カップ",
+   "kind": "acc",
+   "pack": 1,
+   "price": 660,
+   "asin": "B0G4J795LH",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-C5E",
+    "KS-C5F",
+    "KS-C5G",
+    "KS-C5H",
+    "KS-C5J",
+    "KS-C5K",
+    "KS-C5L",
+    "KS-F5E5",
+    "KS-HA10",
+    "KS-IC5",
+    "KS-MX10B",
+    "KS-MX18B"
+   ]
+  },
+  {
+   "id": "3629390001",
+   "name": "かいてんユニット",
+   "kind": "acc",
+   "pack": 1,
+   "price": 7040,
+   "amazonQuery": "3629390001",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-GX10A",
+    "KS-MX10B",
+    "KS-PX10A",
+    "KS-PX10B"
+   ]
+  },
+  {
+   "id": "2343800314",
+   "name": "内釜",
+   "kind": "pot",
+   "pack": 1,
+   "price": 13200,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-GX10A"
+   ]
+  },
+  {
+   "id": "2343800321",
+   "name": "内釜",
+   "kind": "pot",
+   "pack": 1,
+   "price": 13200,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-MX10B"
+   ]
+  },
+  {
+   "id": "2349390010",
+   "name": "かいてんユニット",
+   "kind": "acc",
+   "pack": 1,
+   "price": 7040,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-MX18B"
+   ]
+  },
+  {
+   "id": "2343800322",
+   "name": "内釜",
+   "kind": "pot",
+   "pack": 1,
+   "price": 16500,
+   "amazonQuery": "2343800322",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-MX18B"
+   ]
+  },
+  {
+   "id": "2343800312",
+   "name": "内釜",
+   "kind": "pot",
+   "pack": 1,
+   "price": 16500,
+   "noAmazon": true,
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-PX10A"
+   ]
+  },
+  {
+   "id": "2343800319",
+   "name": "内釜",
+   "kind": "pot",
+   "pack": 1,
+   "price": 20900,
+   "amazonQuery": "2343800319",
+   "life": null,
+   "lifeNote": "シャープ公式の別売品ページには交換めやすの記載がありません。",
+   "models": [
+    "KS-PX10B"
+   ]
+  }
+ ]
+}

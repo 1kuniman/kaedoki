@@ -34,6 +34,13 @@ const KINDS = {
   clean:    { label: 'クリーニングフィルター', cls: 'b-care', order: 1 },
   jokinzai: { label: '除菌剤', cls: 'b-air', order: 5 },
   cartridge: { label: '浄水カートリッジ', cls: 'b-care', order: 1 },
+  filter:   { label: 'フィルター', cls: 'b-air', order: 4 },
+  pump:     { label: '給水ポンプ', cls: 'b-disp', order: 9 },
+  pot:      { label: '内釜・内なべ', cls: 'b-care', order: 1 },
+  lid:      { label: '内ぶた', cls: 'b-dust', order: 2 },
+  packing:  { label: 'パッキン', cls: 'b-air', order: 3 },
+  steam:    { label: '蒸気口・蒸気キャップ', cls: 'b-air', order: 4 },
+  acc:      { label: '付属品・その他', cls: 'b-disp', order: 9 },
 };
 
 // ---------- データ読み込み ----------
@@ -64,6 +71,8 @@ const sharedUse = {};
 for (const d of datasets) for (const p of d.parts.filter(p => p.shared)) {
   if (!partIndex[p.id]) throw new Error(`shared の部品の本体がない: ${p.id}`);
   (sharedUse[p.id] ||= []).push({ ds: d, p });
+  // 価格は本体の部品のものを表示する（メーカーのページによって価格が食い違うことがあるため、サイト内で1つにそろえる）
+  if (!p.price && partIndex[p.id].price) p.price = partIndex[p.id].price;
 }
 
 // ---------- ユーティリティ ----------
@@ -91,17 +100,18 @@ const fmtDate = d => d.replace(/-/g, '/');
 const ASINS = fs.existsSync(path.join(ROOT, 'data-src/asins.json')) ? JSON.parse(fs.readFileSync(path.join(ROOT, 'data-src/asins.json'), 'utf8')) : {};
 const partAmazonUrl = (makerName, p) => {
   const asin = p.asin || ASINS[p.id];
-  if (!asin) return amazonUrl(`${makerName} ${p.id}`);
+  if (!asin) return amazonUrl(p.amazonQuery || `${makerName} ${p.id}`);
   const u = new URL(`https://www.amazon.co.jp/dp/${asin}`);
   if (cfg.amazonTag) u.searchParams.set('tag', cfg.amazonTag);
   return u.toString();
 };
 // 購入ボックス：部品ごとに価格・交換めやす・Amazonボタン
-const amzBtn = (ds, p, label = 'Amazonで見る', cls = 'btn-amz btn-s') => `<a class="${cls}" href="${esc(partAmazonUrl(ds.maker.name, p))}" rel="sponsored nofollow noopener" target="_blank">${label}</a>`;
+// noAmazon の部品（検索しても出品が見つからなかったもの）にはボタンを出さない
+const amzBtn = (ds, p, label = 'Amazonで見る', cls = 'btn-amz btn-s') => p.noAmazon ? '' : `<a class="${cls}" href="${esc(partAmazonUrl(ds.maker.name, p))}" rel="sponsored nofollow noopener" target="_blank">${label}</a>`;
 function buyBox(ds, parts, heading, note = '') {
   if (!parts.length) return '';
   return `<section class="buy"><h2 class="h2">${esc(heading)}</h2>${note ? `<p class="sub">${note}</p>` : ''}
-<ul class="buy-list">${parts.map(p => `<li><div class="buy-info"><a class="pn" href="${partUrl(p.id)}">${p.id}</a> <span class="sub">${esc(p.kind === 'vapor' ? `気化フィルター（${p.type === 'care' ? 'お手入れ' : '使い捨て'}）` : KINDS[p.kind].label)}${p.packLabel ? `・${esc(p.packLabel)}` : p.pack > 1 ? `・${p.pack}個入り` : ''}</span><br><span class="sub">${p.price ? `${esc(ds.priceLabel || '直販価格')} ${yen(p.price)}・` : ''}交換のめやす：${esc(lifeLabel(p))}・${p.models.length}機種で共通</span></div>${amzBtn(ds, p)}</li>`).join('')}</ul></section>`;
+<ul class="buy-list">${parts.map(p => `<li><div class="buy-info"><a class="pn" href="${partUrl(p.id)}">${p.id}</a> <span class="sub">${esc(p.kind === 'vapor' ? `気化フィルター（${p.type === 'care' ? 'お手入れ' : '使い捨て'}）` : KINDS[p.kind].label)}${p.packLabel ? `・${esc(p.packLabel)}` : p.pack > 1 ? `・${p.pack}個入り` : ''}</span><br><span class="sub">${p.price ? `${esc(ds.priceLabel || '直販価格')} ${yen(p.price)}・` : ''}${ds.hideLife ? '' : `交換のめやす：${esc(lifeLabel(p))}・`}${p.models.length}機種で共通</span></div>${amzBtn(ds, p)}</li>`).join('')}</ul></section>`;
 }
 const topPartsOf = (ds, n, filter = () => true) => [...ds.parts].filter(p => (ds.primaryKinds || []).includes(p.kind) && filter(p)).sort((a, b) => b.models.length - a.models.length).slice(0, n);
 const lifeMonths = l => !l ? 9999 : l.unit === 'month' ? l.value : l.unit === 'season' ? l.value * 6 : l.unit === 'year' ? l.value * 12 : 5000;
@@ -222,9 +232,9 @@ function modelPage(ds, m) {
   const primary = ps.find(p => (ds.primaryKinds || []).includes(p.kind));
 
   const partRows = ps.map(p => `<tr><th>${esc(p.kind === 'vapor' ? `気化フィルター（${p.type === 'care' ? 'お手入れ' : '使い捨て'}）` : KINDS[p.kind].label)}</th>
-<td><a class="pn" href="${partUrl(p.id)}">${p.id}</a> ${typeBadge(p)}<br><span class="sub">${esc(p.name)}${p.packLabel ? (p.name.includes(p.packLabel) ? '' : `（${esc(p.packLabel)}）`) : p.pack > 1 && !/\d(個|枚)入/.test(p.name) ? `（${p.pack}個入り）` : ''}・${esc(lifeLabel(p))}${p.typeLabel && !['vapor', 'agatt', 'bio'].includes(p.kind) ? `<br>${esc(p.typeLabel)}` : ''}${p.stockNote ? `<br><strong>${esc(p.stockNote)}</strong>` : ''}</span></td>
+<td><a class="pn" href="${partUrl(p.id)}">${p.id}</a> ${typeBadge(p)}<br><span class="sub">${esc(p.name)}${p.packLabel ? (p.name.includes(p.packLabel) ? '' : `（${esc(p.packLabel)}）`) : p.pack > 1 && !/\d(個|枚)入/.test(p.name) ? `（${p.pack}個入り）` : ''}${ds.hideLife ? '' : `・${esc(lifeLabel(p))}`}${p.typeLabel && !['vapor', 'agatt', 'bio'].includes(p.kind) ? `<br>${esc(p.typeLabel)}` : ''}${p.stockNote ? `<br><strong>${esc(p.stockNote)}</strong>` : ''}</span></td>
 ${hasPrice ? `<td class="price">${p.price ? yen(p.price) : '—'}</td>` : ''}
-<td class="act">${amzBtn(ds, p)}${p.source ? `<a class="off-link" href="${esc(p.source)}" rel="noopener" target="_blank">公式通販で見る</a>` : ''}</td></tr>`).join('\n');
+<td class="act">${amzBtn(ds, p)}${p.noAmazon && !p.source && m.source ? `<a class="off-link" href="${esc(m.source)}" rel="noopener" target="_blank">公式の別売品ページ</a>` : ''}${p.source ? `<a class="off-link" href="${esc(p.source)}" rel="noopener" target="_blank">公式通販で見る</a>` : ''}</td></tr>`).join('\n');
 
   // ダイニチ：お手入れ／使い捨ての費用比較
   let costHtml = '';
@@ -286,19 +296,19 @@ ${buckets.map(b => { const xs = ps.filter(b.test); return xs.length ? `<tr><th>$
   const title = ds.modelTitle ? ds.modelTitle.replace(/\{id\}/g, m.id) : `${m.id} のフィルター交換｜部品番号・${hasPrice ? '価格・' : ''}交換時期（${maker.name} ${maker.category}）`;
   const keyIds = ps.filter(p => ((ds.primaryKinds || []).includes(p.kind) || p.kind === 'air') && p.kind !== 'battery').map(p => p.id);
   const batIds = ps.filter(p => p.kind === 'battery').map(p => p.id);
-  const desc = `${maker.name} ${m.id}（${maker.category}）の${keyIds.length ? `${ds.partWord || 'フィルター'}交換に使う純正部品の部品番号は${keyIds.join('・')}${batIds.length ? `、交換バッテリーは${batIds.join('・')}` : ''}` : `交換バッテリーの部品番号は${batIds.join('・')}`}。${hasPrice ? `${priceLabel}と` : ''}交換のめやすをメーカー資料から確認できます。`;
+  const desc = `${maker.name} ${m.id}（${maker.category}）の${keyIds.length ? `${ds.partWord || 'フィルター'}交換に使う純正部品の部品番号は${keyIds.join('・')}${batIds.length ? `、交換バッテリーは${batIds.join('・')}` : ''}` : `交換バッテリーの部品番号は${batIds.join('・')}`}。${ds.hideLife ? `${hasPrice ? `${priceLabel}を` : '部品番号を'}メーカー公式の情報から確認できます。` : `${hasPrice ? `${priceLabel}と` : ''}交換のめやすをメーカー資料から確認できます。`}`;
   // 冒頭の結論：汚れ・ニオイで替えるフィルターを、交換めやすの短い順に
-  const FIX = ['vapor', 'humid', 'humidpre', 'pre', 'ag', 'dust', 'deo', 'combo', 'set', 'pfilter', 'vfilter'];
+  const FIX = ds.answerKinds || ['vapor', 'humid', 'humidpre', 'pre', 'ag', 'dust', 'deo', 'combo', 'set', 'pfilter', 'vfilter', 'filter'];
   const isPrim = p => (ds.primaryKinds || []).includes(p.kind);
   const fixParts = ps.filter(p => FIX.includes(p.kind)).sort((a, b) => (ds.answerPrimaryFirst ? isPrim(b) - isPrim(a) : 0) || lifeMonths(a.life) - lifeMonths(b.life)).slice(0, 5);
   const fixLabel = p => p.kind === 'vapor' ? `気化フィルター（${p.type === 'care' ? 'お手入れ' : '使い捨て'}）` : ['pfilter', 'vfilter'].includes(p.kind) && p.name !== KINDS[p.kind].label ? `${KINDS[p.kind].label}（${p.name}）` : KINDS[p.kind].label;
   const vaporBoth = fixParts.some(p => p.kind === 'vapor' && p.type === 'care') && fixParts.some(p => p.kind === 'vapor' && p.type === 'disposable');
-  const allLong = fixParts.every(p => p.life && ['year', 'season', 'none'].includes(p.life.unit) && lifeMonths(p.life) >= 60);
+  const allLong = !ds.hideLife && fixParts.every(p => p.life && ['year', 'season', 'none'].includes(p.life.unit) && lifeMonths(p.life) >= 60);
   const answerHtml = fixParts.length ? `<div class="answer">
-<p class="answer-h">フィルターが汚れた・臭うときに確認する部品</p>
-<ul class="answer-list">${fixParts.map(p => `<li><span>${esc(fixLabel(p))}：<a class="pn" href="${partUrl(p.id)}">${p.id}</a><span class="sub">（交換のめやす：${esc(lifeLabel(p))}${p.price ? `・${yen(p.price)}` : ''}）</span></span>${amzBtn(ds, p, 'Amazon', 'btn-amz btn-xs')}</li>`).join('')}</ul>
-${vaporBoth ? '<p>気化フィルターは「お手入れタイプ」か「使い捨てタイプ」の<strong>どちらか一方</strong>を使います。お手入れタイプの「最大5シーズン」は、月1回のクエン酸洗浄をした場合の目安です。</p>' : ''}${allLong ? '<p>この機種のフィルターは、どれも交換の間隔が長い（または交換不要の）部品です。汚れやニオイが気になるときは、買い替える前に取扱説明書のお手入れ方法を確認してください。</p>' : ''}
-<p class="sub">${ds.answerPrimaryFirst ? '' : '交換のめやすの短い順。'}めやすはメーカー公表の値です。価格と購入先は下の表にあります。</p>
+<p class="answer-h">${esc(ds.answerTitle || 'フィルターが汚れた・臭うときに確認する部品')}</p>
+<ul class="answer-list">${fixParts.map(p => `<li><span>${esc(fixLabel(p))}：<a class="pn" href="${partUrl(p.id)}">${p.id}</a><span class="sub">${ds.hideLife ? (p.price || p.typeLabel ? `（${[p.price ? yen(p.price) : '', p.typeLabel ? esc(p.typeLabel) : ''].filter(Boolean).join('・')}）` : '') : `（交換のめやす：${esc(lifeLabel(p))}${p.price ? `・${yen(p.price)}` : ''}）`}</span></span>${amzBtn(ds, p, 'Amazon', 'btn-amz btn-xs')}</li>`).join('')}</ul>
+${ds.hideLife && fixParts.length > 1 ? '<p>同じ種類の部品が2つ以上あるときは、本体の色などによって使う部品が違います。カッコ内の説明を確認してください。</p>' : ''}${vaporBoth ? '<p>気化フィルターは「お手入れタイプ」か「使い捨てタイプ」の<strong>どちらか一方</strong>を使います。お手入れタイプの「最大5シーズン」は、月1回のクエン酸洗浄をした場合の目安です。</p>' : ''}${allLong ? '<p>この機種のフィルターは、どれも交換の間隔が長い（または交換不要の）部品です。汚れやニオイが気になるときは、買い替える前に取扱説明書のお手入れ方法を確認してください。</p>' : ''}
+<p class="sub">${ds.hideLife ? '価格はメーカー公表の希望小売価格（税込）です。そのほかの部品と購入先は下の表にあります。' : `${ds.answerPrimaryFirst ? '' : '交換のめやすの短い順。'}めやすはメーカー公表の値です。価格と購入先は下の表にあります。`}</p>
 </div>` : '';
   const srcUrl = m.source || ds.sourceUrl || maker.officialShop;
   const srcName = ds.modelSourceLabel ? ds.modelSourceLabel.replace('{id}', m.id) : ds.modelSourceName ? ds.modelSourceName.replace('{id}', m.id) : m.source ? `${maker.name} ${m.id} 取扱説明書（PDF）` : ds.sourceName || `${maker.name} 公式 別売部品ページ`;
@@ -334,7 +344,7 @@ ${maker.partialNote ? `<li>${esc(maker.partialNote)}</li>` : ''}
 </ul>
 
 ${primary && primary.models.length > 1 ? `<h2 class="h2">同じ${esc(KINDS[primary.kind].label)}（${primary.id}）が使える機種</h2>
-<p class="sub">${primary.id} は全${primary.models.length}機種で共通です。家に複数台あれば、まとめ買いできます。<a href="${partUrl(primary.id)}">全${primary.models.length}機種の一覧</a></p>
+<p class="sub">${primary.id} は全${primary.models.length}機種で共通です。${ds.hideLife ? '' : '家に複数台あれば、まとめ買いできます。'}<a href="${partUrl(primary.id)}">全${primary.models.length}機種の一覧</a></p>
 ${siblings.length && siblings.length <= 40 ? `<ul class="model-grid">${siblings.map(x => `<li><a href="${modelUrl(ds, x)}">${x}</a></li>`).join('')}</ul>` : ''}` : ''}
 
 <p class="src">出典：<a href="${esc(srcUrl)}" rel="noopener" target="_blank">${esc(srcName)}</a>（${fmtDate(ds.checkedAt)}確認）</p>`;
@@ -354,7 +364,7 @@ function partPage(ds, p) {
   const grouped = groupBySeries(ds, withPage.map(x => ({ id: x })));
   const noPage = p.models.filter(x => !ds.hasPage.has(x));
   const title = `${p.id} ${p.name}の対応機種（適用機種）一覧｜全${p.models.length}機種・${maker.name} ${maker.category}`;
-  const desc = `${maker.name}の${p.name}（${p.id}）が使える${maker.category}の型番${p.models.length}機種の一覧。${p.price ? `${ds.priceLabel || '直販価格'}${yen(p.price)}、` : ''}交換のめやす、購入時の注意をまとめています。`;
+  const desc = `${maker.name}の${p.name}（${p.id}）が使える${maker.category}の型番${p.models.length}機種の一覧。${p.price ? `${ds.priceLabel || '直販価格'}${yen(p.price)}、` : ''}${ds.hideLife ? '' : '交換のめやす、'}購入時の注意をまとめています。`;
   const srcs = p.source ? [[p.source, `${maker.name} 公式 ${p.id}`]] : ds.sourceUrl ? [[ds.sourceUrl, ds.sourceName]] : withPage.map(x => ds.modelList.find(m => m.id === x)).filter(m => m && m.source).map(m => [m.source, `${m.id} 取扱説明書`]);
 
   const body = `
@@ -364,12 +374,12 @@ function partPage(ds, p) {
 <tr><th>部品名</th><td>${esc(p.name)}${p.typeLabel ? `（${esc(p.typeLabel)}）` : ''}${p.stockNote ? `<br><strong>${esc(p.stockNote)}</strong>` : ''}</td></tr>
 <tr><th>入数</th><td>${esc(p.packLabel || `${p.pack}個`)}</td></tr>
 ${p.price ? `<tr><th>${ds.priceLabel === '希望小売価格' ? 'メーカー希望小売価格' : ds.priceLabel || 'メーカー直販価格'}</th><td class="price">${yen(p.price)}<span class="sub">（税込・${fmtDate(ds.checkedAt)}確認）</span></td></tr>` : ''}
-<tr><th>交換のめやす</th><td>${esc(lifeLabel(p))}<br><span class="sub">${esc(p.lifeNote)}</span></td></tr>
+${ds.hideLife ? '' : `<tr><th>交換のめやす</th><td>${esc(lifeLabel(p))}<br><span class="sub">${esc(p.lifeNote)}</span></td></tr>`}
 ${p.variants ? `<tr><th>入数違い</th><td>${esc(p.variants)}</td></tr>` : ''}
 <tr><th>適用機種数</th><td>${p.models.length}機種</td></tr>
 </tbody></table>
 <div class="buy">
-  <a class="btn-amz" href="${esc(partAmazonUrl(maker.name, p))}" rel="sponsored nofollow noopener" target="_blank">Amazonで ${p.id} を見る</a>
+  ${p.noAmazon ? `<p class="sub">Amazonで部品番号 ${p.id} を検索しましたが、出品は見つかりませんでした（${fmtDate(ds.checkedAt)}確認）。購入先は、出典の公式ページで確認してください。</p>` : `<a class="btn-amz" href="${esc(partAmazonUrl(maker.name, p))}" rel="sponsored nofollow noopener" target="_blank">Amazonで ${p.id} を見る</a>`}
   ${p.source ? `<a class="off-link" href="${esc(p.source)}" rel="noopener" target="_blank">公式通販で見る</a>` : ''}
 </div>
 
@@ -398,18 +408,18 @@ function makerPage(ds) {
   const groups = groupBySeries(ds, ds.modelList);
   const primaryOf = g => mainParts(ds, g.models);
   const body = `
-<h1 class="h1">${esc(maker.name)} ${esc(maker.category)}の交換${pw} 機種別一覧</h1>
-<p class="lead">${ds.modelList.length}機種を収録。形名を選ぶと、その機種に合う交換部品の部品番号と交換のめやすが表示されます。</p>
-${datasets.filter(d => d !== ds && d.maker.name === maker.name).map(d => `<p class="sub">${esc(maker.name)}の${esc(d.maker.category)}（${d.modelList.length}機種）は → <a href="${makerUrl(d)}">${esc(maker.name)} ${esc(d.maker.category)}の交換フィルター一覧</a></p>`).join('')}
+<h1 class="h1">${ds.makerH1 ? esc(ds.makerH1) : `${esc(maker.name)} ${esc(maker.category)}の交換${pw} 機種別一覧`}</h1>
+<p class="lead">${ds.modelList.length}機種を収録。形名を選ぶと、その機種に合う交換部品の部品番号${ds.hideLife ? 'と価格' : 'と交換のめやす'}が表示されます。</p>
+${datasets.filter(d => d !== ds && d.maker.name === maker.name).map(d => `<p class="sub">${esc(maker.name)}の${esc(d.maker.category)}（${d.modelList.length}機種）は → <a href="${makerUrl(d)}">${esc(maker.name)} ${esc(d.maker.category)}の交換${d.partWord || 'フィルター'}一覧</a></p>`).join('')}
 ${buyBox(ds, topPartsOf(ds, 6), `よく使われる${pw}（使える機種が多い順）`, `${esc(maker.name)}の${esc(maker.category)}で、適用機種の多い純正部品です。自分の機種に合うかは、下の一覧から型番を選んで確認してください。`)}
 <div class="jump">${groups.map(g => `<a href="#s-${g.key}">${esc(g.name)}</a>`).join('')}</div>
 ${groups.map(g => `<h2 class="h2" id="s-${g.key}">${esc(g.name)}<span class="h2-n">${g.models.length}機種</span></h2>
-<p class="sub">主なフィルター：${primaryOf(g).slice(0, 6).map(id => `<a href="${partUrl(id)}">${id}</a>（${esc(shortType(ds.partById[id]))}・<a href="${esc(partAmazonUrl(maker.name, ds.partById[id]))}" rel="sponsored nofollow noopener" target="_blank">Amazon</a>）`).join('、')}${more(primaryOf(g), 6)}</p>
+<p class="sub">主な${pw}：${primaryOf(g).slice(0, 6).map(id => `<a href="${partUrl(id)}">${id}</a>（${esc(shortType(ds.partById[id]))}${ds.partById[id].noAmazon ? '' : `・<a href="${esc(partAmazonUrl(maker.name, ds.partById[id]))}" rel="sponsored nofollow noopener" target="_blank">Amazon</a>`}）`).join('、')}${more(primaryOf(g), 6)}</p>
 <ul class="model-grid">${g.models.map(m => `<li><a href="${modelUrl(ds, m.id)}">${m.id}</a></li>`).join('')}</ul>`).join('')}
 <p class="src">出典：<a href="${esc(ds.sourceUrl || maker.officialShop)}" rel="noopener" target="_blank">${esc(ds.sourceName || `${maker.name} 公式サポート`)}</a>${ds.modelSources ? '・各機種の取扱説明書' : ''}（${fmtDate(ds.checkedAt)}確認）。ここにない形名は、まだ収録していないか、メーカーの部品供給が終わっている可能性があります。</p>`;
   return layout({
-    title: `${maker.name} ${maker.category}の交換${pw}・部品 型番別一覧｜${topIds.slice(0, 2).join('・')}など${ds.modelList.length}機種`,
-    desc: `${maker.name}の${maker.category}の交換${pw}・部品を型番から探せます。${topIds.slice(0, 3).join('・')}など、${ds.modelList.length}機種それぞれに合う純正部品の部品番号と価格をメーカー公式の情報から一覧にしています。`,
+    title: ds.makerTitle || `${maker.name} ${maker.category}の交換${pw}・部品 型番別一覧｜${topIds.slice(0, 2).join('・')}など${ds.modelList.length}機種`,
+    desc: ds.makerDesc || `${maker.name}の${maker.category}の交換${pw}・部品を型番から探せます。${topIds.slice(0, 3).join('・')}など、${ds.modelList.length}機種それぞれに合う純正部品の部品番号と価格をメーカー公式の情報から一覧にしています。`,
     canonical: makerUrl(ds), ds, crumbs: [{ name: `${maker.name} ${maker.category}` }], body,
   });
 }
@@ -424,7 +434,7 @@ ${datasets.map(ds => {
   return `<h2 class="h2" id="${ds.maker.id}">${esc(ds.maker.name)} ${esc(ds.maker.category)}<span class="h2-n">${ds.parts.length}点</span></h2>
 <table class="tbl parts">
 <thead><tr><th>部品番号</th><th>部品名</th><th>種類</th>${hasPrice ? `<th>${ds.priceLabel || '直販価格'}</th>` : ''}<th>交換めやす</th><th>適用機種</th></tr></thead>
-<tbody>${[...ds.parts].sort((a, b) => KINDS[a.kind].order - KINDS[b.kind].order || a.id.localeCompare(b.id, 'en', { numeric: true })).map(p => `<tr><td><a class="pn" href="${partUrl(p.id)}">${p.id}</a></td><td>${esc(p.name)}</td><td>${typeBadge(p)}</td>${hasPrice ? `<td class="price">${p.price ? yen(p.price) : '—'}</td>` : ''}<td>${esc(lifeLabel(p))}</td><td>${p.models.length}機種</td></tr>`).join('')}</tbody>
+<tbody>${[...ds.parts].sort((a, b) => KINDS[a.kind].order - KINDS[b.kind].order || a.id.localeCompare(b.id, 'en', { numeric: true })).map(p => `<tr><td><a class="pn" href="${partUrl(p.id)}">${p.id}</a></td><td>${esc(p.name)}</td><td>${typeBadge(p)}</td>${hasPrice ? `<td class="price">${p.price ? yen(p.price) : '—'}</td>` : ''}<td>${ds.hideLife ? '—' : esc(lifeLabel(p))}</td><td>${p.models.length}機種</td></tr>`).join('')}</tbody>
 </table>`;
 }).join('')}`;
   return layout({ title: `部品番号一覧｜${cfg.siteName}`, desc: '収録している家電の交換部品の部品番号・交換めやす・適用機種数の一覧。', canonical: '/parts/', crumbs: [{ name: '部品番号一覧' }], body });
@@ -443,7 +453,7 @@ function topPage() {
     <button type="submit">部品を調べる</button>
   </form>
   <ul class="suggest" data-suggest-list hidden></ul>
-  <p class="top-hint">型番は本体の側面か背面のシールに書いてあります。「HD-」「KI-」「FU-」「F-」を省いて入れても探せます。ダイキンは「MCK70Z」、ダイソンは「TP04」「V8」のように入力します。</p>
+  <p class="top-hint">型番は本体の側面か背面のシールに書いてあります。「HD-」「KI-」「FU-」「F-」「HX-」「KS-」を省いて入れても探せます。ダイキンは「MCK70Z」、ダイソンは「TP04」「V8」のように入力します。</p>
 </section>
 
 <h2 class="h2">収録しているメーカー</h2>
@@ -451,11 +461,11 @@ function topPage() {
 <thead><tr><th>メーカー</th><th>製品</th><th>収録機種</th><th>部品</th><th>確認日</th></tr></thead>
 <tbody>${datasets.map(d => `<tr><td><a href="${makerUrl(d)}">${esc(d.maker.nameFull)}</a></td><td>${esc(d.maker.category)}</td><td>${d.modelList.length}機種</td><td>${d.parts.length}点</td><td>${fmtDate(d.checkedAt)}</td></tr>`).join('')}</tbody>
 </table>
-<p class="sub">浄水器・掃除機の消耗品も順次追加します。</p>
+
 
 ${datasets.map(ds => `<h2 class="h2">シリーズから探す（${esc(ds.maker.name)} ${esc(ds.maker.category)}）</h2>
 <table class="tbl series">
-<thead><tr><th>シリーズ</th><th>主な型番</th><th>主なフィルター</th></tr></thead>
+<thead><tr><th>シリーズ</th><th>主な型番</th><th>主な${ds.partWord || 'フィルター'}</th></tr></thead>
 <tbody>${groupBySeries(ds, ds.modelList).map(g => {
   const vp = mainParts(ds, g.models);
   return `<tr><td><a href="${makerUrl(ds)}#s-${g.key}">${esc(g.name)}</a></td><td class="sub">${g.models.slice(-3).map(m => m.id).join('、')} ほか ${g.models.length}機種</td><td>${vp.slice(0, 4).map(id => `<a href="${partUrl(id)}">${id}</a>`).join(' / ')}${more(vp, 4)}</td></tr>`;

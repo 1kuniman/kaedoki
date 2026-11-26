@@ -79,5 +79,8 @@
 ## シャープ加湿機のデータ
 
 `data/sharp-humidifier.json` は `data-src/sharp-humidifier-build.mjs` から作る（`node data-src/sharp-humidifier-build.mjs`）。
+`data/sharp-heater.json`・`data/sharp-ricecooker.json` も同じ（`data-src/sharp-heater-build.mjs`・`data-src/sharp-ricecooker-build.mjs`。取得した内容は `data-src/*-options.tsv`）。
+部品に `noAmazon: true` があるとAmazonのボタンを出さない（検索しても出品が見つからなかった部品）。`amazonQuery` があると、その語でAmazonを検索する。
+データセットの `hideLife: true` は交換めやすの欄を出さない（メーカーが交換めやすを公表していない製品）。`answerKinds`・`answerTitle` は機種ページ冒頭の囲みに出す部品の種類と見出し。
 出典はシャープ公式サポート「加湿器 別売オプション品」（ページが読み込む option_data.js・product_option_data.js）。取得元の「部品:機種」432組と一致することを、スクリプト内のハッシュで検査している。
 FZ-AG01K1・IZ-C90MR は空気清浄機のデータにもある部品なので `shared: true` を付けている。`shared` の部品は部品ページを新しく作らず、既存の部品ページに「加湿機での適用機種」を追記する。
